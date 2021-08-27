@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,6 +19,8 @@ class TinkerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+
+        $a = new Crawler('');
         return Command::SUCCESS;
     }
 }
