@@ -8,16 +8,18 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\Context\Common\Application\CommandBus\CommandBus;
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface as ContainerBag;
-use App\Context\Parser\Application\Command\ParseCategoryProductsByCategoryURL;
+use App\Context\Parser\Application\Command\DownloadProductsPicturesByCategoryURL;
 
-class ParseProductsByCategoryIdCommand extends Command
+class DownloadProductsPicturesByCategoryURLCommand extends Command
 {
     /** @var string */
-    protected static $defaultName = 'project:parse:products:by:category:id';
+    protected static $defaultName = 'project:download:products:pictures:by:category:url';
 
     private CommandBus $commandBus;
 
+    /**
+     * @param CommandBus $commandBus
+     */
     public function __construct(CommandBus $commandBus)
     {
         parent::__construct();
@@ -49,7 +51,7 @@ class ParseProductsByCategoryIdCommand extends Command
             $progressBar->advance();
         };
 
-        $command = new ParseCategoryProductsByCategoryURL(
+        $command = new DownloadProductsPicturesByCategoryURL(
             $input->getArgument('url'),
             $onInit,
             $onStep

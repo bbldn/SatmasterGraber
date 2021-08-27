@@ -23,3 +23,7 @@ services:
         public: true
         autowire: true
         class: App\Context\Parser\Application\CommandHandler\ParseCategoryProductsByCategoryURLHandler
+    App\Context\Parser\Application\Command\DownloadProductsPicturesByCategoryURLHandler:
+        public: true
+        autowire: true
+        class: App\Context\Parser\Application\CommandHandler\DownloadProductsPicturesByCategoryURLHandler
