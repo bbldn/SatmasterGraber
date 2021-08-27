@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Context\Parser\Application\ProductParser;
+namespace App\Context\Parser\Application\Common\ProductParser;
 
 class Result
 {

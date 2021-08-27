@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Context\Parser\Application\ProductParser;
+namespace App\Context\Parser\Application\Common\ProductParser;
 
 use Symfony\Component\DomCrawler\Crawler;
 use App\Context\Parser\Domain\ValueObject\URL;

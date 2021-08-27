@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Context\Parser\Application\CategoryParser;
+namespace App\Context\Parser\Application\Common\CategoryParser;
 
 use Symfony\Component\DomCrawler\Crawler;
 use App\Context\Parser\Domain\ValueObject\URL;
@@ -112,18 +112,16 @@ class Parser
 
     /**
      * @param URL $url
-     * @return string[]
+     * @return Result
      * @throws ServerExceptionInterface
      * @throws ClientExceptionInterface
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
-     *
-     * @psalm-return list<string>
      */
-    public function parse(URL $url): array
+    public function parse(URL $url): Result
     {
         $urls = $this->parsePagination($url->getUrl());
 
-        return $this->parseHtml($urls);
+        return new Result($this->parseHtml($urls));
     }
 }
