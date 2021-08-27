@@ -38,11 +38,17 @@
             "bin/console"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v5.3.4"
+    },
     "symfony/dependency-injection": {
         "version": "v5.3.4"
     },
     "symfony/deprecation-contracts": {
         "version": "v2.4.0"
+    },
+    "symfony/dom-crawler": {
+        "version": "v5.3.4"
     },
     "symfony/dotenv": {
         "version": "v5.3.6"
@@ -92,6 +98,9 @@
             "src/Controller/.gitignore",
             "src/Kernel.php"
         ]
+    },
+    "symfony/http-client": {
+        "version": "v5.3.4"
     },
     "symfony/http-client-contracts": {
         "version": "v2.4.0"
