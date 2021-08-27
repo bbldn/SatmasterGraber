@@ -97,6 +97,20 @@ class Parser
     }
 
     /**
+     * @param Crawler $crawler
+     * @return float|null
+     */
+    private function parsePrice(Crawler $crawler): ?float
+    {
+        $node = $crawler->filter('meta[itemprop="price"]')->first();
+        if (0 === $node->count()) {
+            return null;
+        }
+
+        return (float)$node->attr('content');
+    }
+
+    /**
      * @param URL $url
      * @return Product
      * @throws ClientExceptionInterface
@@ -113,6 +127,7 @@ class Parser
         $result = new Product();
         $result->setId($this->parseId($crawler));
         $result->setName($this->parseName($crawler));
+        $result->setPrice($this->parsePrice($crawler));
         $result->setImages($this->parseImages($crawler));
         $result->setDescription($this->parseDescription($crawler));
 

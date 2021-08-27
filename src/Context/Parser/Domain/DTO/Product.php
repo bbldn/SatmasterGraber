@@ -6,6 +6,8 @@ class Product
 {
     private ?int $id = null;
 
+    private ?float $price = null;
+
     private ?string $name = null;
 
     /**
@@ -32,6 +34,25 @@ class Product
     public function setId(?int $id): self
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param float|null $price
+     * @return Product
+     */
+    public function setPrice(?float $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }

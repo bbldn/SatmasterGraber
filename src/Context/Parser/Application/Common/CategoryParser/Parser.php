@@ -117,6 +117,8 @@ class Parser
      * @throws ClientExceptionInterface
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
+     *
+     * @psalm-return list<string>
      */
     public function parse(URL $url): array
     {
