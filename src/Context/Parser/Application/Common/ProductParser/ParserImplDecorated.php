@@ -37,7 +37,7 @@ class ParserImplDecorated implements Parser
 
         $doc = new DOMDocument();
         libxml_use_internal_errors(true);
-        $doc->loadHTML($description);
+        $doc->loadHTML("<?xml encoding=\"utf-8\" ?>{$description}");
         $crawler = new Crawler($doc);
 
         $closure = static function (Crawler $c) use ($doc): void {

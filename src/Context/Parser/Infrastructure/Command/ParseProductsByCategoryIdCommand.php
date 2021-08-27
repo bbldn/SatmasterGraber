@@ -56,6 +56,8 @@ class ParseProductsByCategoryIdCommand extends Command
         );
         $this->commandBus->execute($command);
 
+        $output->write(PHP_EOL);
+
         return Command::SUCCESS;
     }
 }
