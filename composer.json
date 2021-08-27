@@ -15,6 +15,7 @@
         "symfony/yaml": "5.3.*"
     },
     "require-dev": {
+        "symfony/maker-bundle": "^1.33"
     },
     "config": {
         "optimize-autoloader": true,
@@ -26,11 +27,6 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "App\\Tests\\": "tests/"
         }
     },
     "replace": {
