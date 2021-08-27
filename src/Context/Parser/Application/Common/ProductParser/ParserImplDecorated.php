@@ -2,6 +2,8 @@
 
 namespace App\Context\Parser\Application\Common\ProductParser;
 
+use DOMDocument;
+use Symfony\Component\DomCrawler\Crawler;
 use App\Context\Parser\Domain\DTO\Product;
 use App\Context\Parser\Domain\ValueObject\URL;
 use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
@@ -23,6 +25,33 @@ class ParserImplDecorated implements Parser
     }
 
     /**
+     * @param Product $product
+     * @return void
+     */
+    private function change(Product $product): void
+    {
+        $description = $product->getDescription();
+        if (null === $description) {
+            return;
+        }
+
+        $doc = new DOMDocument();
+        libxml_use_internal_errors(true);
+        $doc->loadHTML($description);
+        $crawler = new Crawler($doc);
+
+        $closure = static function (Crawler $c) use ($doc): void {
+            foreach ($c as $child) {
+                $node = $doc->createElement('p', $child->nodeValue);
+                $child->parentNode->replaceChild($node, $child);
+            }
+        };
+
+        $crawler->filter('a')->each($closure);
+        $product->setDescription($crawler->html());
+    }
+
+    /**
      * @param URL $url
      * @return Product
      * @throws ClientExceptionInterface
@@ -32,6 +61,9 @@ class ParserImplDecorated implements Parser
      */
     public function parse(URL $url): Product
     {
-        return $this->parserImpl->parse($url);
+        $product = $this->parserImpl->parse($url);
+        $this->change($product);
+
+        return $product;
     }
 }
