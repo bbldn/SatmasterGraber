@@ -148,8 +148,8 @@ class Generator
          */
         $result = [sprintf('DELETE FROM oc_product_image WHERE product_id = %s;', $id)];
         foreach ($images as $image) {
-            $fields = ['product_id', 'image', 'sort_order'];
             $values = [$id, $image, 0];
+            $fields = ['product_id', 'image', 'sort_order'];
 
             /** @noinspection SqlNoDataSourceInspection */
             $result[] = sprintf('INSERT INTO oc_product_image(%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
