@@ -64,6 +64,15 @@ class Generator
             '`external_id`',
         ];
 
+        $images = $product->getImages();
+        if (null !== $images && count($images) > 0) {
+            $pathParts = pathinfo($images[0]);
+            $path = "catalog/prod/graber/{$pathParts['basename']}";
+            $image = json_encode($path);
+        } else {
+            $image = '""';
+        }
+
         $values = [
             $id, //product_id
             $id, //model
@@ -76,7 +85,7 @@ class Generator
             '""', //location
             1, //quantity
             7, //stock_status_id
-            '""', //image
+            $image, //image
             0, //manufacturer_id
             1, //shipping
             $product->getPrice(), //price
@@ -180,7 +189,7 @@ class Generator
         $result = [sprintf('DELETE FROM `oc_product_image` WHERE product_id = %s;', $id)];
         foreach ($images as $image) {
             $pathParts = pathinfo($image);
-            $image = "catalog/prod/{$pathParts['basename']}";
+            $image = "catalog/prod/graber/{$pathParts['basename']}";
 
             $values = [$id, json_encode($image), 0];
             $fields = ['`product_id`', '`image`', '`sort_order`'];
