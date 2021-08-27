@@ -11,7 +11,7 @@ class Generator
      */
     public function sqlStartTransaction(): string
     {
-        return 'START TRANSACTION;';
+        return 'START TRANSACTION;' . PHP_EOL . PHP_EOL;
     }
 
     /**
@@ -100,7 +100,7 @@ class Generator
         ];
 
         /** @noinspection SqlNoDataSourceInspection */
-        return sprintf('REPLACE INTO `oc_product` (%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
+        return sprintf('REPLACE INTO `oc_product` (%s) VALUES (%s);', implode(', ', $fields), implode(', ', $values));
     }
 
     /**
@@ -133,7 +133,7 @@ class Generator
         ];
 
         /** @noinspection SqlNoDataSourceInspection */
-        return sprintf('REPLACE INTO `oc_product_description` (%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
+        return sprintf('REPLACE INTO `oc_product_description` (%s) VALUES (%s);', implode(', ', $fields), implode(', ', $values));
     }
 
     /**
@@ -146,7 +146,7 @@ class Generator
         $fields = ['`product_id`', '`store_id`'];
 
         /** @noinspection SqlNoDataSourceInspection */
-        return sprintf('REPLACE INTO `oc_product_to_store` (%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
+        return sprintf('REPLACE INTO `oc_product_to_store` (%s) VALUES (%s);', implode(', ', $fields), implode(', ', $values));
     }
 
     /**
@@ -166,11 +166,14 @@ class Generator
          */
         $result = [sprintf('DELETE FROM `oc_product_image` WHERE product_id = %s;', $id)];
         foreach ($images as $image) {
+            $pathParts = pathinfo($image);
+            $image = "/products_pictures/{$pathParts['basename']}";
+
             $values = [$id, json_encode($image), 0];
             $fields = ['`product_id`', '`image`', '`sort_order`'];
 
             /** @noinspection SqlNoDataSourceInspection */
-            $result[] = sprintf('INSERT INTO `oc_product_image` (%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
+            $result[] = sprintf('INSERT INTO `oc_product_image` (%s) VALUES (%s);', implode(', ', $fields), implode(', ', $values));
         }
 
         return $result;
