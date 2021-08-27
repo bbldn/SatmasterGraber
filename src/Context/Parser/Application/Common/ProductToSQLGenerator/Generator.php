@@ -150,6 +150,19 @@ class Generator
     }
 
     /**
+     * @param string $id
+     * @return string
+     */
+    private function sqlReplaceProductCategory(string $id): string
+    {
+        $values = [$id, 61];
+        $fields = ['`product_id`', '`category_id`'];
+
+        /** @noinspection SqlNoDataSourceInspection */
+        return sprintf('REPLACE INTO `oc_product_to_category` (%s) VALUES (%s);', implode(', ', $fields), implode(', ', $values));
+    }
+
+    /**
      * @param Product $product
      * @param string $id
      * @return string[]
@@ -167,7 +180,7 @@ class Generator
         $result = [sprintf('DELETE FROM `oc_product_image` WHERE product_id = %s;', $id)];
         foreach ($images as $image) {
             $pathParts = pathinfo($image);
-            $image = "/products_pictures/{$pathParts['basename']}";
+            $image = "catalog/prod/{$pathParts['basename']}";
 
             $values = [$id, json_encode($image), 0];
             $fields = ['`product_id`', '`image`', '`sort_order`'];
@@ -192,6 +205,7 @@ class Generator
             $this->sqlReplaceProduct($product, $id),
             $this->sqlReplaceProductDescription($product, $id),
             $this->sqlReplaceProductStore($id),
+            $this->sqlReplaceProductCategory($id),
             ...$this->sqlReplaceProductImage($product, $id),
             PHP_EOL,
         ];
