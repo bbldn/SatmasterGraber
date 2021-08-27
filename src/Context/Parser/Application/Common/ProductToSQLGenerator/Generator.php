@@ -52,15 +52,15 @@ class Generator
             $id, //product_id
             $id, //model
             $id, //sku
-            '', //upc
-            '', //ean
-            '', //jan
-            '', //isbn
-            '', //mpn
-            '', //location
+            '""', //upc
+            '""', //ean
+            '""', //jan
+            '""', //isbn
+            '""', //mpn
+            '""', //location
             1, //quantity
             7, //stock_status_id
-            '', //image
+            '""', //image
             0, //manufacturer_id
             1, //shipping
             $product->getPrice(), //price
@@ -108,12 +108,12 @@ class Generator
         $values = [
             $id, //product_id
             1, //language_id
-            addslashes($product->getName()), //name
-            addslashes($product->getDescription()), //description
-            '', //tag
-            '', //meta_title
-            '', //meta_description
-            '', //meta_keyword
+            sprintf('"%s"', addslashes($product->getName())), //name
+            sprintf('"%s"', addslashes($product->getDescription())), //description
+            '""', //tag
+            '""', //meta_title
+            '""', //meta_description
+            '""', //meta_keyword
         ];
 
         /** @noinspection SqlNoDataSourceInspection */
@@ -169,7 +169,7 @@ class Generator
         $id = "1000{$product->getId()}";
 
         $result = [
-            "--Product#{$id}",
+            "--Product#$id",
             $this->sqlReplaceProduct($product, $id),
             $this->sqlReplaceProductDescription($product, $id),
             $this->sqlReplaceProductStore($id),

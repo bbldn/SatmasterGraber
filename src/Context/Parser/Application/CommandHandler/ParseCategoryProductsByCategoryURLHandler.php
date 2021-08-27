@@ -3,6 +3,7 @@
 namespace App\Context\Parser\Application\CommandHandler;
 
 use App\Context\Parser\Domain\ValueObject\URL;
+use Symfony\Component\HttpKernel\KernelInterface as Kernel;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -15,6 +16,8 @@ use App\Context\Parser\Application\Common\ProductToSQLGenerator\Generator as Pro
 
 class ParseCategoryProductsByCategoryURLHandler implements Base
 {
+    private Kernel $kernel;
+
     private ProductParser $productParser;
 
     private CategoryParser $categoryParser;
@@ -22,16 +25,19 @@ class ParseCategoryProductsByCategoryURLHandler implements Base
     private ProductToSQLGenerator $productToSQLGenerator;
 
     /**
+     * @param Kernel $kernel
      * @param ProductParser $productParser
      * @param CategoryParser $categoryParser
      * @param ProductToSQLGenerator $productToSQLGenerator
      */
     public function __construct(
+        Kernel $kernel,
         ProductParser $productParser,
         CategoryParser $categoryParser,
         ProductToSQLGenerator $productToSQLGenerator
     )
     {
+        $this->kernel = $kernel;
         $this->productParser = $productParser;
         $this->categoryParser = $categoryParser;
         $this->productToSQLGenerator = $productToSQLGenerator;
@@ -46,9 +52,10 @@ class ParseCategoryProductsByCategoryURLHandler implements Base
      */
     public function __invoke(ParseCategoryProductsByCategoryURL $command): void
     {
-        $fileName = '/var/dumps/dump.sql';
+        $fileName = "{$this->kernel->getProjectDir()}/var/dumps/dump.sql";
         if (true === file_exists($fileName)) {
             unlink($fileName);
+            touch($fileName);
         }
 
         $onInit = $command->getOnInit();
