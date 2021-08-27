@@ -124,8 +124,8 @@ class Generator
         $values = [
             $id, //product_id
             1, //language_id
-            json_encode($product->getName()), //name
-            json_encode($product->getDescription()), //description
+            json_encode($product->getName(), JSON_UNESCAPED_UNICODE), //name
+            json_encode($product->getDescription(), JSON_UNESCAPED_UNICODE), //description
             '""', //tag
             '""', //meta_title
             '""', //meta_description
