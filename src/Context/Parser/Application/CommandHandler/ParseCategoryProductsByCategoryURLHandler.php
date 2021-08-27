@@ -65,6 +65,8 @@ class ParseCategoryProductsByCategoryURLHandler implements Base
             $onInit(count($urls));
         }
 
+        file_put_contents($fileName, $this->productToSQLGenerator->sqlStartTransaction(), FILE_APPEND);
+
         foreach ($urls as $url) {
             $product = $this->productParser->parse(new URL($url));
             $row = $this->productToSQLGenerator->generate($product);
@@ -74,5 +76,7 @@ class ParseCategoryProductsByCategoryURLHandler implements Base
                 $onStep();
             }
         }
+
+        file_put_contents($fileName, $this->productToSQLGenerator->sqlCommit(), FILE_APPEND);
     }
 }

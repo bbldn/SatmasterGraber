@@ -7,6 +7,22 @@ use App\Context\Parser\Domain\DTO\Product;
 class Generator
 {
     /**
+     * @return string
+     */
+    public function sqlStartTransaction(): string
+    {
+        return 'START TRANSACTION;';
+    }
+
+    /**
+     * @return string
+     */
+    public function sqlCommit(): string
+    {
+        return 'COMMIT;';
+    }
+
+    /**
      * @param Product $product
      * @param string $id
      * @return string
@@ -14,38 +30,38 @@ class Generator
     private function sqlReplaceProduct(Product $product, string $id): string
     {
         $fields = [
-            'product_id',
-            'model',
-            'sku',
-            'upc',
-            'ean',
-            'jan',
-            'isbn',
-            'mpn',
-            'location',
-            'quantity',
-            'stock_status_id',
-            'image',
-            'manufacturer_id',
-            'shipping',
-            'price',
-            'points',
-            'tax_class_id',
-            'date_available',
-            'weight',
-            'weight_class_id',
-            'length',
-            'width',
-            'height',
-            'length_class_id',
-            'subtract',
-            'minimum',
-            'sort_order',
-            'status',
-            'viewed',
-            'date_added',
-            'date_modified',
-            'external_id',
+            '`product_id`',
+            '`model`',
+            '`sku`',
+            '`upc`',
+            '`ean`',
+            '`jan`',
+            '`isbn`',
+            '`mpn`',
+            '`location`',
+            '`quantity`',
+            '`stock_status_id`',
+            '`image`',
+            '`manufacturer_id`',
+            '`shipping`',
+            '`price`',
+            '`points`',
+            '`tax_class_id`',
+            '`date_available`',
+            '`weight`',
+            '`weight_class_id`',
+            '`length`',
+            '`width`',
+            '`height`',
+            '`length_class_id`',
+            '`subtract`',
+            '`minimum`',
+            '`sort_order`',
+            '`status`',
+            '`viewed`',
+            '`date_added`',
+            '`date_modified`',
+            '`external_id`',
         ];
 
         $values = [
@@ -84,7 +100,7 @@ class Generator
         ];
 
         /** @noinspection SqlNoDataSourceInspection */
-        return sprintf('REPLACE INTO oc_product(%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
+        return sprintf('REPLACE INTO `oc_product` (%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
     }
 
     /**
@@ -95,21 +111,21 @@ class Generator
     private function sqlReplaceProductDescription(Product $product, string $id): string
     {
         $fields = [
-            'product_id',
-            'language_id',
-            'name',
-            'description',
-            'tag',
-            'meta_title',
-            'meta_description',
-            'meta_keyword',
+            '`product_id`',
+            '`language_id`',
+            '`name`',
+            '`description`',
+            '`tag`',
+            '`meta_title`',
+            '`meta_description`',
+            '`meta_keyword`',
         ];
 
         $values = [
             $id, //product_id
             1, //language_id
-            sprintf('"%s"', addslashes($product->getName())), //name
-            sprintf('"%s"', addslashes($product->getDescription())), //description
+            json_encode($product->getName()), //name
+            json_encode($product->getDescription()), //description
             '""', //tag
             '""', //meta_title
             '""', //meta_description
@@ -117,7 +133,7 @@ class Generator
         ];
 
         /** @noinspection SqlNoDataSourceInspection */
-        return sprintf('REPLACE INTO oc_product_description(%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
+        return sprintf('REPLACE INTO `oc_product_description` (%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
     }
 
     /**
@@ -127,10 +143,10 @@ class Generator
     private function sqlReplaceProductStore(string $id): string
     {
         $values = [$id, 0];
-        $fields = ['product_id', 'store_id'];
+        $fields = ['`product_id`', '`store_id`'];
 
         /** @noinspection SqlNoDataSourceInspection */
-        return sprintf('REPLACE INTO oc_product_to_store(%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
+        return sprintf('REPLACE INTO `oc_product_to_store` (%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
     }
 
     /**
@@ -148,13 +164,13 @@ class Generator
          * @noinspection SqlDialectInspection
          * @noinspection SqlNoDataSourceInspection
          */
-        $result = [sprintf('DELETE FROM oc_product_image WHERE product_id = %s;', $id)];
+        $result = [sprintf('DELETE FROM `oc_product_image` WHERE product_id = %s;', $id)];
         foreach ($images as $image) {
-            $values = [$id, $image, 0];
-            $fields = ['product_id', 'image', 'sort_order'];
+            $values = [$id, json_encode($image), 0];
+            $fields = ['`product_id`', '`image`', '`sort_order`'];
 
             /** @noinspection SqlNoDataSourceInspection */
-            $result[] = sprintf('INSERT INTO oc_product_image(%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
+            $result[] = sprintf('INSERT INTO `oc_product_image` (%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
         }
 
         return $result;
