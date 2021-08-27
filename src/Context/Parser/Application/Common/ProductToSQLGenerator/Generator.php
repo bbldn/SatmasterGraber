@@ -82,7 +82,7 @@ class Generator
             $product->getPrice(), //price
             0, //points
             0, //tax_class_id
-            '2021-01-01', //date_available
+            json_encode('2021-01-01'), //date_available
             0, //weight
             1, //weight_class_id
             0, //length
@@ -94,8 +94,8 @@ class Generator
             0, //sort_order
             1, //status
             0, //viewed
-            '2021-01-01 00:00:00', //date_added
-            '2021-01-01 00:00:00', //date_modified
+            json_encode('2021-01-01 00:00:00'), //date_added
+            json_encode('2021-01-01 00:00:00'), //date_modified
             $product->getId(), //external_id
         ];
 
@@ -201,7 +201,6 @@ class Generator
         $id = "1000{$product->getId()}";
 
         $result = [
-            "--Product#$id",
             $this->sqlReplaceProduct($product, $id),
             $this->sqlReplaceProductDescription($product, $id),
             $this->sqlReplaceProductStore($id),
