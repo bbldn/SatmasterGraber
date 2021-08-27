@@ -26,9 +26,9 @@ class Parser
      * @param string $url
      * @return string|null
      * @throws ClientExceptionInterface
-     * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws RedirectionExceptionInterface
      */
     private function getContent(string $url): ?string
     {
