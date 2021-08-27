@@ -112,16 +112,16 @@ class Parser
 
     /**
      * @param URL $url
-     * @return Result
+     * @return string[]
      * @throws ServerExceptionInterface
      * @throws ClientExceptionInterface
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
      */
-    public function parse(URL $url): Result
+    public function parse(URL $url): array
     {
         $urls = $this->parsePagination($url->getUrl());
 
-        return new Result($this->parseHtml($urls));
+        return $this->parseHtml($urls);
     }
 }

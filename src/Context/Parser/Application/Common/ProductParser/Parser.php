@@ -3,6 +3,7 @@
 namespace App\Context\Parser\Application\Common\ProductParser;
 
 use Symfony\Component\DomCrawler\Crawler;
+use App\Context\Parser\Domain\DTO\Product;
 use App\Context\Parser\Domain\ValueObject\URL;
 use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -97,19 +98,19 @@ class Parser
 
     /**
      * @param URL $url
-     * @return Result
+     * @return Product
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
      */
-    public function parse(URL $url): Result
+    public function parse(URL $url): Product
     {
         $html = $this->getContent($url->getUrl());
 
         $crawler = new Crawler($html);
 
-        $result = new Result();
+        $result = new Product();
         $result->setId($this->parseId($crawler));
         $result->setName($this->parseName($crawler));
         $result->setImages($this->parseImages($crawler));

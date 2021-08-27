@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Context\Parser\Application\Common\ProductParser;
+namespace App\Context\Parser\Domain\DTO;
 
-class Result
+class Product
 {
     private ?int $id = null;
 
@@ -27,7 +27,7 @@ class Result
 
     /**
      * @param int|null $id
-     * @return Result
+     * @return Product
      */
     public function setId(?int $id): self
     {
@@ -46,7 +46,7 @@ class Result
 
     /**
      * @param string|null $name
-     * @return Result
+     * @return Product
      */
     public function setName(?string $name): self
     {
@@ -65,7 +65,7 @@ class Result
 
     /**
      * @param array|null $images
-     * @return Result
+     * @return Product
      */
     public function setImages(?array $images): self
     {
@@ -84,7 +84,7 @@ class Result
 
     /**
      * @param string|null $description
-     * @return Result
+     * @return Product
      */
     public function setDescription(?string $description): self
     {
