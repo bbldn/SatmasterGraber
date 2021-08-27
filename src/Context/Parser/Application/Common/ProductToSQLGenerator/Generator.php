@@ -108,8 +108,8 @@ class Generator
         $values = [
             $id, //product_id
             1, //language_id
-            $product->getName(), //name
-            $product->getDescription(), //description
+            addslashes($product->getName()), //name
+            addslashes($product->getDescription()), //description
             '', //tag
             '', //meta_title
             '', //meta_description
@@ -136,9 +136,11 @@ class Generator
     /**
      * @param Product $product
      * @param string $id
-     * @return string
+     * @return string[]
+     *
+     * @psalm-return list<string>
      */
-    private function sqlReplaceProductImage(Product $product, string $id): string
+    private function sqlReplaceProductImage(Product $product, string $id): array
     {
         $images = $product->getImages() ?? [];
 
@@ -155,7 +157,7 @@ class Generator
             $result[] = sprintf('INSERT INTO oc_product_image(%s) VALUES (%s);', implode(',', $fields), implode(',', $values));
         }
 
-        return implode(PHP_EOL, $result);
+        return $result;
     }
 
     /**
@@ -167,10 +169,12 @@ class Generator
         $id = "1000{$product->getId()}";
 
         $result = [
+            "--Product#{$id}",
             $this->sqlReplaceProduct($product, $id),
             $this->sqlReplaceProductDescription($product, $id),
             $this->sqlReplaceProductStore($id),
-            $this->sqlReplaceProductImage($product, $id),
+            ...$this->sqlReplaceProductImage($product, $id),
+            PHP_EOL,
         ];
 
         return implode(PHP_EOL, $result);
