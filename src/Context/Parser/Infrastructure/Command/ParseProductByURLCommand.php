@@ -3,17 +3,16 @@
 namespace App\Context\Parser\Infrastructure\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\Context\Common\Application\CommandBus\CommandBus;
-use App\Context\Parser\Application\Command\ParseCategoryProductsByCategoryURL;
+use App\Context\Parser\Application\Command\ParseProductByURL;
 
-class ParseProductsByCategoryURLCommand extends Command
+class ParseProductByURLCommand extends Command
 {
     /** @var string */
-    protected static $defaultName = 'project:parse:products:by:category:url';
+    protected static $defaultName = 'project:parse:product:by:url';
 
     private CommandBus $commandBus;
 
@@ -41,24 +40,8 @@ class ParseProductsByCategoryURLCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $progressBar = new ProgressBar($output);
-
-        $onInit = static function(int $number) use($progressBar): void {
-            $progressBar->setMaxSteps($number);
-        };
-
-        $onStep = static function() use($progressBar): void {
-            $progressBar->advance();
-        };
-
-        $command = new ParseCategoryProductsByCategoryURL(
-            $input->getArgument('url'),
-            $onInit,
-            $onStep
-        );
+        $command = new ParseProductByURL($input->getArgument('url'));
         $this->commandBus->execute($command);
-
-        $output->write(PHP_EOL);
 
         return Command::SUCCESS;
     }

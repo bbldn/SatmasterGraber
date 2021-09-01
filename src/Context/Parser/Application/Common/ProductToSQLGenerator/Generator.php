@@ -3,9 +3,20 @@
 namespace App\Context\Parser\Application\Common\ProductToSQLGenerator;
 
 use App\Context\Parser\Domain\DTO\Product;
+use App\Context\Parser\Application\Common\ProductToSQLGenerator\AttributeToSQLGenerator\Generator as AttributeToSQLGenerator;
 
 class Generator
 {
+    private AttributeToSQLGenerator $attributeToSQLGenerator;
+
+    /**
+     * @param AttributeToSQLGenerator $attributeToSQLGenerator
+     */
+    public function __construct(AttributeToSQLGenerator $attributeToSQLGenerator)
+    {
+        $this->attributeToSQLGenerator = $attributeToSQLGenerator;
+    }
+
     /**
      * @return string
      */
@@ -27,7 +38,7 @@ class Generator
      * @param string $id
      * @return string
      */
-    private function sqlReplaceProduct(Product $product, string $id): string
+    private function sqlProduct(Product $product, string $id): string
     {
         $fields = [
             '`product_id`',
@@ -117,7 +128,7 @@ class Generator
      * @param string $id
      * @return string
      */
-    private function sqlReplaceProductDescription(Product $product, string $id): string
+    private function sqlProductDescription(Product $product, string $id): string
     {
         $fields = [
             '`product_id`',
@@ -149,7 +160,7 @@ class Generator
      * @param string $id
      * @return string
      */
-    private function sqlReplaceProductStore(string $id): string
+    private function sqlProductStore(string $id): string
     {
         $values = [$id, 0];
         $fields = ['`product_id`', '`store_id`'];
@@ -162,9 +173,9 @@ class Generator
      * @param string $id
      * @return string
      */
-    private function sqlReplaceProductCategory(string $id): string
+    private function sqlProductCategory(string $id): string
     {
-        $values = [$id, 61];
+        $values = [$id, 62];
         $fields = ['`product_id`', '`category_id`'];
 
         /** @noinspection SqlNoDataSourceInspection */
@@ -178,7 +189,7 @@ class Generator
      *
      * @psalm-return list<string>
      */
-    private function sqlReplaceProductImage(Product $product, string $id): array
+    private function sqlProductImage(Product $product, string $id): array
     {
         $images = $product->getImages() ?? [];
 
@@ -203,6 +214,25 @@ class Generator
 
     /**
      * @param Product $product
+     * @param string $productId
+     * @return string[]
+     *
+     * @psalm-return list<string>
+     */
+    private function sqlAttributes(Product $product, string $productId): array
+    {
+        $attributes = $product->getAttributes() ?? [];
+
+        $result = [];
+        foreach ($attributes as $attribute) {
+            $result[] = $this->attributeToSQLGenerator->generate($attribute, $productId);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param Product $product
      * @return string
      */
     public function generate(Product $product): string
@@ -210,11 +240,12 @@ class Generator
         $id = "1000{$product->getId()}";
 
         $result = [
-            $this->sqlReplaceProduct($product, $id),
-            $this->sqlReplaceProductDescription($product, $id),
-            $this->sqlReplaceProductStore($id),
-            $this->sqlReplaceProductCategory($id),
-            ...$this->sqlReplaceProductImage($product, $id),
+            $this->sqlProduct($product, $id),
+            $this->sqlProductDescription($product, $id),
+            $this->sqlProductStore($id),
+            $this->sqlProductCategory($id),
+            ...$this->sqlProductImage($product, $id),
+            ...$this->sqlAttributes($product, $id),
             PHP_EOL,
         ];
 

@@ -20,6 +20,13 @@ class Product
     private ?string $description = null;
 
     /**
+     * @var Attribute[]|null
+     *
+     * @psalm-var list<Attribute>|null
+     */
+    private ?array $attributes = null;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -110,6 +117,29 @@ class Product
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Attribute[]|null
+     *
+     * @psalm-return list<Attribute>|null
+     */
+    public function getAttributes(): ?array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param Attribute[]|null $attributes
+     * @return Product
+     *
+     * @psalm-param list<Attribute>|null $attributes
+     */
+    public function setAttributes(?array $attributes): Product
+    {
+        $this->attributes = $attributes;
 
         return $this;
     }

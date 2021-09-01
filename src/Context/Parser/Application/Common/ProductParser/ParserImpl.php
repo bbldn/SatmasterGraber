@@ -4,23 +4,32 @@ namespace App\Context\Parser\Application\Common\ProductParser;
 
 use Symfony\Component\DomCrawler\Crawler;
 use App\Context\Parser\Domain\DTO\Product;
+use App\Context\Parser\Domain\DTO\Attribute;
 use App\Context\Parser\Domain\ValueObject\URL;
 use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use App\Context\Parser\Application\Common\ProductParser\AttributesParser\Parser as AttributesParser;
 
 class ParserImpl implements Parser
 {
     private HttpClient $httpClient;
 
+    private AttributesParser $attributesParser;
+
     /**
      * @param HttpClient $httpClient
+     * @param AttributesParser $attributesParser
      */
-    public function __construct(HttpClient $httpClient)
+    public function __construct(
+        HttpClient $httpClient,
+        AttributesParser $attributesParser
+    )
     {
         $this->httpClient = $httpClient;
+        $this->attributesParser = $attributesParser;
     }
 
     /**
@@ -111,6 +120,17 @@ class ParserImpl implements Parser
     }
 
     /**
+     * @param Crawler $crawler
+     * @return Attribute[]
+     *
+     * @psalm-return list<Attribute>
+     */
+    private function parseAttributes(Crawler $crawler): array
+    {
+        return $this->attributesParser->parse($crawler);
+    }
+
+    /**
      * @param URL $url
      * @return Product
      * @throws ClientExceptionInterface
@@ -129,6 +149,7 @@ class ParserImpl implements Parser
         $result->setName($this->parseName($crawler));
         $result->setPrice($this->parsePrice($crawler));
         $result->setImages($this->parseImages($crawler));
+        $result->setAttributes($this->parseAttributes($crawler));
         $result->setDescription($this->parseDescription($crawler));
 
         return $result;

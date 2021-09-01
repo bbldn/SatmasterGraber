@@ -19,6 +19,10 @@ services:
         class: App\Context\Parser\Application\Common\ProductParser\ParserImplDecorated
 
     #Commands
+    App\Context\Parser\Application\Command\ParseProductByURLHandler:
+        public: true
+        autowire: true
+        class: App\Context\Parser\Application\CommandHandler\ParseProductByURLHandler
     App\Context\Parser\Application\Command\ParseCategoryProductsByCategoryURLHandler:
         public: true
         autowire: true
