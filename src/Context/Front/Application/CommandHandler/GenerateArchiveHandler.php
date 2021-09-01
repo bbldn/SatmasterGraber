@@ -4,11 +4,16 @@ namespace App\Context\Front\Application\CommandHandler;
 
 use Throwable;
 use ZipArchive;
+use JsonSerializable;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Context\Parser\Domain\ValueObject\URL;
 use App\Context\Front\Application\Command\GenerateArchive;
+use App\Context\Front\Application\CommandHandler\Step\Error;
+use App\Context\Front\Application\CommandHandler\Step\Finish;
+use App\Context\Front\Application\CommandHandler\Step\Process;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use App\Context\Front\Application\CommandHandler\Step\Initialization;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use App\Context\Front\Application\Command\GenerateArchiveHandler as Base;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -47,41 +52,41 @@ class GenerateArchiveHandler implements Base
     }
 
     /**
-     * @param GenerateArchive $message
+     * @param GenerateArchive $command
      * @return void
      */
-    private function createFolders(GenerateArchive $message): void
+    private function createFolders(GenerateArchive $command): void
     {
-        mkdir("/tmp/graber/{$message->getUserId()}/dumps", 0777, true);
-        mkdir("/tmp/graber/{$message->getUserId()}/images", 0777, true);
+        mkdir("/tmp/graber/{$command->getUserId()}/dumps", 0777, true);
+        mkdir("/tmp/graber/{$command->getUserId()}/images", 0777, true);
     }
 
     /**
-     * @param GenerateArchive $message
+     * @param GenerateArchive $command
      * @return void
      */
-    private function removeFolders(GenerateArchive $message): void
+    private function removeFolders(GenerateArchive $command): void
     {
-        $this->filesystem->remove("/tmp/graber/{$message->getUserId()}");
+        $this->filesystem->remove("/tmp/graber/{$command->getUserId()}");
     }
 
     /**
-     * @param GenerateArchive $message
-     * @param array $state
+     * @param GenerateArchive $command
+     * @param JsonSerializable $state
      * @return void
      */
-    private function setState(GenerateArchive $message, array $state): void
+    private function setState(GenerateArchive $command, JsonSerializable $state): void
     {
-        file_put_contents("/tmp/graber/{$message->getUserId()}.json", json_encode($state));
+        file_put_contents("/tmp/graber/{$command->getUserId()}.json", json_encode($state));
     }
 
     /**
-     * @param GenerateArchive $message
+     * @param GenerateArchive $command
      * @return void
      */
-    private function createArchive(GenerateArchive $message): void
+    private function createArchive(GenerateArchive $command): void
     {
-        $fileName = "/tmp/graber/{$message->getUserId()}.zip";
+        $fileName = "/tmp/graber/{$command->getUserId()}.zip";
         if (true === file_exists($fileName)) {
             $this->filesystem->remove($fileName);
         }
@@ -89,13 +94,13 @@ class GenerateArchiveHandler implements Base
         $zip = new ZipArchive();
         $zip->open($fileName, ZipArchive::CREATE);
 
-        foreach (scandir("/tmp/graber/{$message->getUserId()}/dumps") as $path) {
+        foreach (scandir("/tmp/graber/{$command->getUserId()}/dumps") as $path) {
             if ('.' !== $path && '..' !== $path) {
                 $zip->addFile("dumps/$path", $path);
             }
         }
 
-        foreach (scandir("/tmp/graber/{$message->getUserId()}/images") as $path) {
+        foreach (scandir("/tmp/graber/{$command->getUserId()}/images") as $path) {
             if ('.' !== $path && '..' !== $path) {
                 $zip->addFile("images/$path", $path);
             }
@@ -105,43 +110,37 @@ class GenerateArchiveHandler implements Base
     }
 
     /**
-     * @param GenerateArchive $message
-     * @throws ClientExceptionInterface
+     * @param GenerateArchive $command
+     * @return void
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
-     * @return void
+     * @throws ClientExceptionInterface
      */
-    private function invoke(GenerateArchive $message): void
+    private function invoke(GenerateArchive $command): void
     {
         $calculatePercent = static fn(int $current, int $total): int => (int)(($current * 100) / $total);
 
-        $this->createFolders($message);
-        $this->setState($message, ['message' => 'Получаем список товаров', 'percent' => 0]);
-        $productsUrls = $this->categoryParser->parse(new URL($message->getSourceCategoryUrl()));
-        $this->setState($message, ['message' => 'Список товаров успешно получен', 'percent' => 0]);
+        $this->createFolders($command);
+        $this->setState($command, new Initialization('Получаем список товаров'));
+        $productsUrls = $this->categoryParser->parse(new URL($command->getSourceCategoryUrl()));
+        $this->setState($command, new Initialization('Список товаров успешно получен'));
 
         foreach ($productsUrls as $index => $productUrl) {
             $product = $this->productParser->parse(new URL($productUrl));
 
             $arguments = new Arguments($product);
-            $arguments->setImagePath($message->getDestinationImagesPath());
-            $arguments->setCategoryId($message->getDestinationCategoryId());
+            $arguments->setImagePath($command->getDestinationImagesPath());
+            $arguments->setCategoryId($command->getDestinationCategoryId());
             $this->productToSQLGenerator->generate($arguments);
 
-            $this->setState(
-                $message,
-                ['message' => 'Обрабатываем товары', 'percent' => $calculatePercent($index + 1, count($productsUrls))]
-            );
+            $this->setState($command, new Process($calculatePercent($index + 1, count($productsUrls)), 'Обрабатываем товары'));
         }
 
-        $this->createArchive($message);
-        $this->removeFolders($message);
+        $this->createArchive($command);
+        $this->removeFolders($command);
 
-        $this->setState(
-            $message,
-            ['message' => 'Архив успешно создан', 'url' => "/archive/{$message->getUserId()}.zip"]
-        );
+        $this->setState($command, new Finish("/archive/{$command->getUserId()}.zip", 'Архив успешно создан'));
     }
 
     /**
@@ -153,7 +152,7 @@ class GenerateArchiveHandler implements Base
         try {
             $this->invoke($command);
         }  catch (Throwable $e) {
-            $this->setState($command, ['error' => 'Ошибка сервера. Обратитесь к администратору.']);
+            $this->setState($command, new Error('Ошибка сервера. Обратитесь к администратору.'));
         }
     }
 }
