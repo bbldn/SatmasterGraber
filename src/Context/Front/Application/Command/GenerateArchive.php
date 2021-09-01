@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Context\Parser\Domain\Message;
+namespace App\Context\Front\Application\Command;
 
-class GenerateArchive
+use App\Context\Common\Application\CommandBus\Command;
+
+class GenerateArchive implements Command
 {
     private string $userId;
 

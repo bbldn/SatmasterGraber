@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Context\Parser\Infrastructure\MessageHandler;
+namespace App\Context\Front\Application\CommandHandler;
 
 use Throwable;
 use ZipArchive;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Context\Parser\Domain\ValueObject\URL;
-use App\Context\Parser\Domain\Message\GenerateArchive;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use App\Context\Front\Application\Command\GenerateArchive;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use App\Context\Front\Application\Command\GenerateArchiveHandler as Base;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use App\Context\Parser\Application\Common\ProductToSQLGenerator\Arguments;
 use App\Context\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Context\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
 use App\Context\Parser\Application\Common\ProductToSQLGenerator\Generator as ProductToSQLGenerator;
 
-class GenerateArchiveHandler implements MessageHandlerInterface
+class GenerateArchiveHandler implements Base
 {
     private Filesystem $filesystem;
 
@@ -145,15 +145,15 @@ class GenerateArchiveHandler implements MessageHandlerInterface
     }
 
     /**
-     * @param GenerateArchive $message
+     * @param GenerateArchive $command
      * @return void
      */
-    public function __invoke(GenerateArchive $message): void
+    public function __invoke(GenerateArchive $command): void
     {
         try {
-            $this->invoke($message);
+            $this->invoke($command);
         }  catch (Throwable $e) {
-            $this->setState($message, ['error' => 'Ошибка сервера. Обратитесь к администратору.']);
+            $this->setState($command, ['error' => 'Ошибка сервера. Обратитесь к администратору.']);
         }
     }
 }
