@@ -66,7 +66,7 @@ class DownloadProductsPicturesByCategoryURLHandler implements Base
             foreach ($images as $image) {
                 $array = pathinfo($image);
 
-                $url = "https://satmaster.kiev.ua{$image}";
+                $url = "https://satmaster.kiev.ua$image";
                 $response = $this->httpClient->request('GET', $url);
                 $fileName = "{$this->kernel->getProjectDir()}/var/images/{$array['basename']}";
                 file_put_contents($fileName, $response->getContent(false));

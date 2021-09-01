@@ -11,6 +11,7 @@ use App\Context\Front\Application\Command\GenerateArchive;
 use App\Context\Front\Application\CommandHandler\Step\Error;
 use App\Context\Front\Application\CommandHandler\Step\Finish;
 use App\Context\Front\Application\CommandHandler\Step\Process;
+use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use App\Context\Front\Application\CommandHandler\Step\Initialization;
@@ -26,6 +27,8 @@ class GenerateArchiveHandler implements Base
 {
     private Filesystem $filesystem;
 
+    private HttpClient $httpClient;
+
     private ProductParser $productParser;
 
     private CategoryParser $categoryParser;
@@ -34,18 +37,21 @@ class GenerateArchiveHandler implements Base
 
     /**
      * @param Filesystem $filesystem
+     * @param HttpClient $httpClient
      * @param ProductParser $productParser
      * @param CategoryParser $categoryParser
      * @param ProductToSQLGenerator $productToSQLGenerator
      */
     public function __construct(
         Filesystem $filesystem,
+        HttpClient $httpClient,
         ProductParser $productParser,
         CategoryParser $categoryParser,
         ProductToSQLGenerator $productToSQLGenerator
     )
     {
         $this->filesystem = $filesystem;
+        $this->httpClient = $httpClient;
         $this->productParser = $productParser;
         $this->categoryParser = $categoryParser;
         $this->productToSQLGenerator = $productToSQLGenerator;
@@ -82,9 +88,9 @@ class GenerateArchiveHandler implements Base
 
     /**
      * @param GenerateArchive $command
-     * @return void
+     * @return string
      */
-    private function createArchive(GenerateArchive $command): void
+    private function createArchive(GenerateArchive $command): string
     {
         $fileName = "/tmp/graber/{$command->getUserId()}.zip";
         if (true === file_exists($fileName)) {
@@ -107,6 +113,8 @@ class GenerateArchiveHandler implements Base
         }
 
         $zip->close();
+
+        return $fileName;
     }
 
     /**
@@ -126,21 +134,39 @@ class GenerateArchiveHandler implements Base
         $productsUrls = $this->categoryParser->parse(new URL($command->getSourceCategoryUrl()));
         $this->setState($command, new Initialization('Список товаров успешно получен'));
 
+        $dumpsFileName = "/tmp/graber/{$command->getUserId()}/dumps/dumps.sql";
+        file_put_contents($dumpsFileName, $this->productToSQLGenerator->sqlStartTransaction(), FILE_APPEND);
         foreach ($productsUrls as $index => $productUrl) {
             $product = $this->productParser->parse(new URL($productUrl));
 
             $arguments = new Arguments($product);
             $arguments->setImagePath($command->getDestinationImagesPath());
             $arguments->setCategoryId($command->getDestinationCategoryId());
-            $this->productToSQLGenerator->generate($arguments);
 
-            $this->setState($command, new Process($calculatePercent($index + 1, count($productsUrls)), 'Обрабатываем товары'));
+            $row = $this->productToSQLGenerator->generate($arguments);
+            file_put_contents($dumpsFileName, $row, FILE_APPEND);
+
+            $images = $product->getImages() ?? [];
+            foreach ($images as $image) {
+                $array = pathinfo($image);
+
+                $url = "https://satmaster.kiev.ua$image";
+                $response = $this->httpClient->request('GET', $url);
+                $fileName = "/tmp/graber/{$command->getUserId()}/images/{$array['basename']}";
+                file_put_contents($fileName, $response->getContent(false));
+            }
+
+            $this->setState(
+                $command,
+                new Process($calculatePercent($index + 1, count($productsUrls)), 'Обрабатываем товары')
+            );
         }
+        file_put_contents($dumpsFileName, $this->productToSQLGenerator->sqlCommit(), FILE_APPEND);
 
-        $this->createArchive($command);
+        $archivePath = $this->createArchive($command);
         $this->removeFolders($command);
 
-        $this->setState($command, new Finish("/archive/{$command->getUserId()}.zip", 'Архив успешно создан'));
+        $this->setState($command, new Finish($archivePath, 'Архив успешно создан'));
     }
 
     /**
