@@ -70,8 +70,17 @@ class GenerateArchiveHandler implements Base
      */
     private function createFolders(GenerateArchive $command): void
     {
-        mkdir("/tmp/graber/{$command->getUserId()}/dumps", 0777, true);
-        mkdir("/tmp/graber/{$command->getUserId()}/images", 0777, true);
+        $dumpsPath = "/tmp/graber/{$command->getUserId()}/dumps";
+        if (true === is_dir($dumpsPath)) {
+            $this->filesystem->remove($dumpsPath);
+        }
+        $this->filesystem->mkdir($dumpsPath);
+
+        $imagesPath = "/tmp/graber/{$command->getUserId()}/images";
+        if (false === is_dir($imagesPath)) {
+            $this->filesystem->remove($imagesPath);
+        }
+        $this->filesystem->mkdir($imagesPath);
     }
 
     /**
@@ -80,7 +89,10 @@ class GenerateArchiveHandler implements Base
      */
     private function removeFolders(GenerateArchive $command): void
     {
-        $this->filesystem->remove("/tmp/graber/{$command->getUserId()}");
+        $this->filesystem->remove([
+            "/tmp/graber/{$command->getUserId()}/dumps",
+            "/tmp/graber/{$command->getUserId()}/images",
+        ]);
     }
 
     /**
@@ -107,15 +119,17 @@ class GenerateArchiveHandler implements Base
         $zip = new ZipArchive();
         $zip->open($fileName, ZipArchive::CREATE);
 
-        foreach (scandir("/tmp/graber/{$command->getUserId()}/dumps") as $path) {
+        $dumpsPath = "/tmp/graber/{$command->getUserId()}/dumps";
+        foreach (scandir($dumpsPath) as $path) {
             if ('.' !== $path && '..' !== $path) {
-                $zip->addFile("dumps/$path", $path);
+                $zip->addFile("$dumpsPath/$path", "dumps/$path");
             }
         }
 
-        foreach (scandir("/tmp/graber/{$command->getUserId()}/images") as $path) {
+        $imagesPath = "/tmp/graber/{$command->getUserId()}/images";
+        foreach (scandir($imagesPath) as $path) {
             if ('.' !== $path && '..' !== $path) {
-                $zip->addFile("images/$path", $path);
+                $zip->addFile("$imagesPath/$path", "images/$path");
             }
         }
 

@@ -8,9 +8,9 @@ class GenerateArchive
 
     private string $sourceCategoryUrl;
 
-    private ?int $destinationCategoryId;
+    private ?int $destinationCategoryId = null;
 
-    private ?string $destinationImagesPath;
+    private ?string $destinationImagesPath = null;
 
     /**
      * @param string $userId
