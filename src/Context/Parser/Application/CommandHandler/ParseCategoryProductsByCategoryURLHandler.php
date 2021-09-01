@@ -6,6 +6,7 @@ use App\Context\Parser\Domain\ValueObject\URL;
 use Symfony\Component\HttpKernel\KernelInterface as Kernel;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use App\Context\Parser\Application\Common\ProductToSQLGenerator\Arguments;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use App\Context\Parser\Application\Command\ParseCategoryProductsByCategoryURL;
@@ -69,7 +70,10 @@ class ParseCategoryProductsByCategoryURLHandler implements Base
 
         foreach ($urls as $url) {
             $product = $this->productParser->parse(new URL($url));
-            $row = $this->productToSQLGenerator->generate($product, 62);
+            $arguments = new Arguments($product);
+            $arguments->setCategoryId(62);
+            $arguments->setImagePath('catalog/prod/graber/');
+            $row = $this->productToSQLGenerator->generate($arguments);
             file_put_contents($fileName, $row, FILE_APPEND);
 
             if (null !== $onStep) {

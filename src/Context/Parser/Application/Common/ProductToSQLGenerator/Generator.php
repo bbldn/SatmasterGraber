@@ -56,9 +56,10 @@ class Generator
 
     /**
      * @param Product $product
+     * @param string|null $path
      * @return string
      */
-    private function sqlProduct(Product $product): string
+    private function sqlProduct(Product $product, ?string $path): string
     {
         $fields = [
             '`product_id`',
@@ -96,9 +97,9 @@ class Generator
         ];
 
         $images = $product->getImages();
-        if (null !== $images && count($images) > 0) {
+        if (null !== $path && null !== $images && count($images) > 0) {
             $pathParts = pathinfo($images[0]);
-            $path = "catalog/prod/graber/{$pathParts['basename']}";
+            $path = "$path{$pathParts['basename']}";
             $image = json_encode($path);
         } else {
             $image = '""';
@@ -136,7 +137,7 @@ class Generator
             0, //viewed
             json_encode('2021-01-01 00:00:00'), //date_added
             json_encode('2021-01-01 00:00:00'), //date_modified
-            $product->getId(), //external_id
+            $product->getId() ?? 'null', //external_id
         ];
 
         /** @noinspection SqlNoDataSourceInspection */
@@ -202,11 +203,12 @@ class Generator
 
     /**
      * @param Product $product
+     * @param string $path
      * @return string[]
      *
      * @psalm-return list<string>
      */
-    private function sqlProductImage(Product $product): array
+    private function sqlProductImage(Product $product, string $path): array
     {
         $images = $product->getImages() ?? [];
 
@@ -217,7 +219,7 @@ class Generator
         $result = ['DELETE FROM `oc_product_image` WHERE product_id = @productId;'];
         foreach ($images as $image) {
             $pathParts = pathinfo($image);
-            $image = "catalog/prod/graber/{$pathParts['basename']}";
+            $image = "$path{$pathParts['basename']}";
 
             $values = ['@productId', json_encode($image), 0];
             $fields = ['`product_id`', '`image`', '`sort_order`'];
@@ -251,22 +253,34 @@ class Generator
     }
 
     /**
-     * @param Product $product
-     * @param int $categoryId
+     * @param Arguments $arguments
      * @return string
      */
-    public function generate(Product $product, int $categoryId): string
+    public function generate(Arguments $arguments): string
     {
+        $path = $arguments->getImagePath();
+        $product = $arguments->getProduct();
+
         $result = [
             $this->sqlId($product),
-            $this->sqlProduct($product),
+            $this->sqlProduct($product, $path),
             $this->sqlProductDescription($product),
             $this->sqlProductStore(),
-            $this->sqlProductCategory($categoryId),
-            ...$this->sqlProductImage($product),
             ...$this->sqlAttributes($product),
-            PHP_EOL,
         ];
+
+        $categoryId = $arguments->getCategoryId();
+        if (null !== $categoryId) {
+            $result[] = $this->sqlProductCategory($categoryId);
+        }
+
+        if (null !== $path) {
+            foreach ($this->sqlProductImage($product, $path) as $item) {
+                $result[] = $item;
+            }
+        }
+
+        $result[] = PHP_EOL;
 
         return implode(PHP_EOL, $result);
     }
