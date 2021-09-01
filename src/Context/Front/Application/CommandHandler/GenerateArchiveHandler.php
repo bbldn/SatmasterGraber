@@ -5,11 +5,13 @@ namespace App\Context\Front\Application\CommandHandler;
 use Throwable;
 use ZipArchive;
 use JsonSerializable;
+use Psr\Log\LoggerInterface as Logger;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Context\Parser\Domain\ValueObject\URL;
 use App\Context\Front\Application\Command\GenerateArchive;
 use App\Context\Front\Application\CommandHandler\Step\Error;
 use App\Context\Front\Application\CommandHandler\Step\Finish;
+use App\Context\Common\Application\Helper\ExceptionFormatter;
 use App\Context\Front\Application\CommandHandler\Step\Process;
 use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -25,6 +27,8 @@ use App\Context\Parser\Application\Common\ProductToSQLGenerator\Generator as Pro
 
 class GenerateArchiveHandler implements Base
 {
+    private Logger $logger;
+
     private Filesystem $filesystem;
 
     private HttpClient $httpClient;
@@ -36,6 +40,7 @@ class GenerateArchiveHandler implements Base
     private ProductToSQLGenerator $productToSQLGenerator;
 
     /**
+     * @param Logger $logger
      * @param Filesystem $filesystem
      * @param HttpClient $httpClient
      * @param ProductParser $productParser
@@ -43,6 +48,7 @@ class GenerateArchiveHandler implements Base
      * @param ProductToSQLGenerator $productToSQLGenerator
      */
     public function __construct(
+        Logger $logger,
         Filesystem $filesystem,
         HttpClient $httpClient,
         ProductParser $productParser,
@@ -50,6 +56,7 @@ class GenerateArchiveHandler implements Base
         ProductToSQLGenerator $productToSQLGenerator
     )
     {
+        $this->logger = $logger;
         $this->filesystem = $filesystem;
         $this->httpClient = $httpClient;
         $this->productParser = $productParser;
@@ -178,6 +185,7 @@ class GenerateArchiveHandler implements Base
         try {
             $this->invoke($command);
         }  catch (Throwable $e) {
+            $this->logger->error(ExceptionFormatter::e($e));
             $this->setState($command, new Error('Ошибка сервера. Обратитесь к администратору.'));
         }
     }

@@ -2,8 +2,10 @@
 
 namespace App\Context\Front\Application\CommandHandler\Step;
 
-class Finish extends Step
+class Finish implements Step
 {
+    use StepTrait;
+
     private string $url;
 
     private string $message;

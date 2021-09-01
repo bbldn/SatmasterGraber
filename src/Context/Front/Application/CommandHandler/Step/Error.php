@@ -2,8 +2,10 @@
 
 namespace App\Context\Front\Application\CommandHandler\Step;
 
-class Error extends Step
+class Error implements Step
 {
+    use StepTrait;
+
     private string $text;
 
     private ?int $code;

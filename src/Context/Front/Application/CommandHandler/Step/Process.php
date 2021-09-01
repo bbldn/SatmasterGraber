@@ -2,8 +2,10 @@
 
 namespace App\Context\Front\Application\CommandHandler\Step;
 
-class Process extends Step
+class Process implements Step
 {
+    use StepTrait;
+
     private int $percent;
 
     private string $message;

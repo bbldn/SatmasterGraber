@@ -2,8 +2,10 @@
 
 namespace App\Context\Front\Application\CommandHandler\Step;
 
-class Initialization extends Step
+class Initialization implements Step
 {
+    use StepTrait;
+
     private string $message;
 
     /**
