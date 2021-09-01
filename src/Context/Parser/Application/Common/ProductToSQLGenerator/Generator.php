@@ -35,10 +35,30 @@ class Generator
 
     /**
      * @param Product $product
-     * @param string $id
      * @return string
      */
-    private function sqlProduct(Product $product, string $id): string
+    private function sqlId(Product $product): string
+    {
+        /**
+         * @noinspection SqlDialectInspection
+         * @noinspection SqlNoDataSourceInspection
+         */
+        $expression = sprintf('SELECT `product_id` FROM `oc_product_description` WHERE `name` = "%s" LIMIT 1', $product->getName());
+
+        /**
+         * @noinspection SqlDialectInspection
+         * @noinspection SqlNoDataSourceInspection
+         */
+        $altValue = 'SELECT COALESCE(MAX(`product_id`), 0) + 1 FROM `oc_product`';
+
+        return "SET @productId := IFNULL(($expression), ($altValue));";
+    }
+
+    /**
+     * @param Product $product
+     * @return string
+     */
+    private function sqlProduct(Product $product): string
     {
         $fields = [
             '`product_id`',
@@ -85,9 +105,9 @@ class Generator
         }
 
         $values = [
-            $id, //product_id
-            $id, //model
-            $id, //sku
+            '@productId', //product_id
+            '@productId', //model
+            '@productId', //sku
             '""', //upc
             '""', //ean
             '""', //jan
@@ -99,7 +119,7 @@ class Generator
             $image, //image
             0, //manufacturer_id
             1, //shipping
-            $product->getPrice(), //price
+            $product->getPrice() ?? 0.0, //price
             0, //points
             0, //tax_class_id
             json_encode('2021-01-01'), //date_available
@@ -125,10 +145,9 @@ class Generator
 
     /**
      * @param Product $product
-     * @param string $id
      * @return string
      */
-    private function sqlProductDescription(Product $product, string $id): string
+    private function sqlProductDescription(Product $product): string
     {
         $fields = [
             '`product_id`',
@@ -142,7 +161,7 @@ class Generator
         ];
 
         $values = [
-            $id, //product_id
+            '@productId', //product_id
             1, //language_id
             json_encode($product->getName(), JSON_UNESCAPED_UNICODE), //name
             json_encode($product->getDescription(), JSON_UNESCAPED_UNICODE), //description
@@ -157,12 +176,11 @@ class Generator
     }
 
     /**
-     * @param string $id
      * @return string
      */
-    private function sqlProductStore(string $id): string
+    private function sqlProductStore(): string
     {
-        $values = [$id, 0];
+        $values = ['@productId', 0];
         $fields = ['`product_id`', '`store_id`'];
 
         /** @noinspection SqlNoDataSourceInspection */
@@ -170,12 +188,12 @@ class Generator
     }
 
     /**
-     * @param string $id
+     * @param int $categoryId
      * @return string
      */
-    private function sqlProductCategory(string $id): string
+    private function sqlProductCategory(int $categoryId): string
     {
-        $values = [$id, 62];
+        $values = ['@productId', $categoryId];
         $fields = ['`product_id`', '`category_id`'];
 
         /** @noinspection SqlNoDataSourceInspection */
@@ -184,12 +202,11 @@ class Generator
 
     /**
      * @param Product $product
-     * @param string $id
      * @return string[]
      *
      * @psalm-return list<string>
      */
-    private function sqlProductImage(Product $product, string $id): array
+    private function sqlProductImage(Product $product): array
     {
         $images = $product->getImages() ?? [];
 
@@ -197,12 +214,12 @@ class Generator
          * @noinspection SqlDialectInspection
          * @noinspection SqlNoDataSourceInspection
          */
-        $result = [sprintf('DELETE FROM `oc_product_image` WHERE product_id = %s;', $id)];
+        $result = ['DELETE FROM `oc_product_image` WHERE product_id = @productId;'];
         foreach ($images as $image) {
             $pathParts = pathinfo($image);
             $image = "catalog/prod/graber/{$pathParts['basename']}";
 
-            $values = [$id, json_encode($image), 0];
+            $values = ['@productId', json_encode($image), 0];
             $fields = ['`product_id`', '`image`', '`sort_order`'];
 
             /** @noinspection SqlNoDataSourceInspection */
@@ -214,12 +231,11 @@ class Generator
 
     /**
      * @param Product $product
-     * @param string $productId
      * @return string[]
      *
      * @psalm-return list<string>
      */
-    private function sqlAttributes(Product $product, string $productId): array
+    private function sqlAttributes(Product $product): array
     {
         $attributes = $product->getAttributes() ?? [];
 
@@ -227,7 +243,7 @@ class Generator
         foreach ($attributes as $attribute) {
             $result = [
                 ...$result,
-                ...$this->attributeToSQLGenerator->generate($attribute, $productId),
+                ...$this->attributeToSQLGenerator->generate($attribute),
             ];
         }
 
@@ -236,19 +252,19 @@ class Generator
 
     /**
      * @param Product $product
+     * @param int $categoryId
      * @return string
      */
-    public function generate(Product $product): string
+    public function generate(Product $product, int $categoryId): string
     {
-        $id = "1000{$product->getId()}";
-
         $result = [
-            $this->sqlProduct($product, $id),
-            $this->sqlProductDescription($product, $id),
-            $this->sqlProductStore($id),
-            $this->sqlProductCategory($id),
-            ...$this->sqlProductImage($product, $id),
-            ...$this->sqlAttributes($product, $id),
+            $this->sqlId($product),
+            $this->sqlProduct($product),
+            $this->sqlProductDescription($product),
+            $this->sqlProductStore(),
+            $this->sqlProductCategory($categoryId),
+            ...$this->sqlProductImage($product),
+            ...$this->sqlAttributes($product),
             PHP_EOL,
         ];
 

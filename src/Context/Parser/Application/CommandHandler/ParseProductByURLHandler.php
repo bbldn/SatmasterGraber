@@ -50,7 +50,7 @@ class ParseProductByURLHandler implements Base
         $fileName = "{$this->kernel->getProjectDir()}/var/dumps/dump.sql";
 
         $product = $this->productParser->parse(new URL($command->getUrl()));
-        $row = $this->productToSQLGenerator->generate($product);
-        file_put_contents($fileName, $row, FILE_APPEND);
+        $row = $this->productToSQLGenerator->generate($product, 62);
+        file_put_contents($fileName, $row);
     }
 }

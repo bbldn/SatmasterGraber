@@ -16,8 +16,13 @@ class Parser
     public function parse(Crawler $crawler): array
     {
         $result = [];
+        $crawler = $crawler->filter('#haracteristics .tech_chars dl');
+        if (0 === $crawler->count()) {
+            return $result;
+        }
+
         $lastAttribute = null;
-        foreach ($crawler->filter('#haracteristics .tech_chars dl')->children() as $c) {
+        foreach ($crawler->children() as $c) {
             switch ($c->nodeName) {
                 case 'dt':
                     $lastAttribute = new Attribute();

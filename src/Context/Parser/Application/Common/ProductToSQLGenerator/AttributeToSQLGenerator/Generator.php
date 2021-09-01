@@ -24,7 +24,7 @@ class Generator
          */
         $altValue = 'SELECT COALESCE(MAX(`attribute_id`), 0) + 1 FROM `oc_attribute`';
 
-        return "SET @attributeId := IFNULL(($expression), ($altValue))";
+        return "SET @attributeId := IFNULL(($expression), ($altValue));";
     }
 
     /**
@@ -54,13 +54,12 @@ class Generator
 
     /**
      * @param Attribute $attribute
-     * @param string $productId
      * @return string
      */
-    private function sqlProductAttribute(Attribute $attribute, string $productId): string
+    private function sqlProductAttribute(Attribute $attribute): string
     {
         $fields = ['`product_id`', '`attribute_id`', '`language_id`', '`text`'];
-        $values = [$productId, '@attributeId', '1', sprintf('"%s"', $attribute->getValue())];
+        $values = ['@productId', '@attributeId', '1', json_encode($attribute->getValue(), JSON_UNESCAPED_UNICODE)];
 
         /** @noinspection SqlNoDataSourceInspection */
         return sprintf('REPLACE INTO `oc_product_attribute` (%s) VALUES (%s);', implode(', ', $fields), implode(', ', $values));
@@ -68,23 +67,17 @@ class Generator
 
     /**
      * @param Attribute $attribute
-     * @param string $productId
      * @return string[]
      *
      * @psalm-return list<string>
      */
-    public function generate(Attribute $attribute, string $productId): array
+    public function generate(Attribute $attribute): array
     {
-        $product = $attribute->getProduct();
-        if (null === $product) {
-            return [];
-        }
-
         return [
             $this->sqlId($attribute),
             $this->sqlAttribute(),
             $this->sqlAttributeDescription($attribute),
-            $this->sqlProductAttribute($attribute, $productId),
+            $this->sqlProductAttribute($attribute),
         ];
     }
 }

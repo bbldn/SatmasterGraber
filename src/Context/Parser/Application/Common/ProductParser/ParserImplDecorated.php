@@ -40,8 +40,8 @@ class ParserImplDecorated implements Parser
             return;
         }
 
-        $doc = new DOMDocument();
         libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
         $doc->loadHTML("<?xml encoding=\"utf-8\" ?>$description");
         $crawler = new Crawler($doc);
 

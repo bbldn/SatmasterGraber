@@ -69,7 +69,7 @@ class ParseCategoryProductsByCategoryURLHandler implements Base
 
         foreach ($urls as $url) {
             $product = $this->productParser->parse(new URL($url));
-            $row = $this->productToSQLGenerator->generate($product);
+            $row = $this->productToSQLGenerator->generate($product, 62);
             file_put_contents($fileName, $row, FILE_APPEND);
 
             if (null !== $onStep) {
