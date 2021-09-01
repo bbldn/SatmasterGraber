@@ -11,6 +11,7 @@ use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use App\Context\Parser\Application\Common\ProductParser\AttributesParser\Parser as AttributesParser;
 
 class ParserImplDecorated implements Parser
 {
@@ -18,10 +19,14 @@ class ParserImplDecorated implements Parser
 
     /**
      * @param HttpClient $httpClient
+     * @param AttributesParser $attributesParser
      */
-    public function __construct(HttpClient $httpClient)
+    public function __construct(
+        HttpClient $httpClient,
+        AttributesParser $attributesParser
+    )
     {
-        $this->parserImpl = new ParserImpl($httpClient);
+        $this->parserImpl = new ParserImpl($httpClient, $attributesParser);
     }
 
     /**
@@ -37,7 +42,7 @@ class ParserImplDecorated implements Parser
 
         $doc = new DOMDocument();
         libxml_use_internal_errors(true);
-        $doc->loadHTML("<?xml encoding=\"utf-8\" ?>{$description}");
+        $doc->loadHTML("<?xml encoding=\"utf-8\" ?>$description");
         $crawler = new Crawler($doc);
 
         $closure = static function (Crawler $c) use ($doc): void {

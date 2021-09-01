@@ -121,13 +121,19 @@ class ParserImpl implements Parser
 
     /**
      * @param Crawler $crawler
+     * @param Product $product
      * @return Attribute[]
      *
      * @psalm-return list<Attribute>
      */
-    private function parseAttributes(Crawler $crawler): array
+    private function parseAttributes(Crawler $crawler, Product $product): array
     {
-        return $this->attributesParser->parse($crawler);
+        $attributes = $this->attributesParser->parse($crawler);
+        foreach ($attributes as $attribute) {
+            $attribute->setProduct($product);
+        }
+
+        return $attributes;
     }
 
     /**
@@ -149,8 +155,8 @@ class ParserImpl implements Parser
         $result->setName($this->parseName($crawler));
         $result->setPrice($this->parsePrice($crawler));
         $result->setImages($this->parseImages($crawler));
-        $result->setAttributes($this->parseAttributes($crawler));
         $result->setDescription($this->parseDescription($crawler));
+        $result->setAttributes($this->parseAttributes($crawler, $result));
 
         return $result;
     }

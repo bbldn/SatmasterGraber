@@ -15,10 +15,26 @@ class Parser
      */
     public function parse(Crawler $crawler): array
     {
+        $result = [];
+        $lastAttribute = null;
         foreach ($crawler->filter('#haracteristics .tech_chars dl')->children() as $c) {
-            var_dump($c->nodeName);
+            switch ($c->nodeName) {
+                case 'dt':
+                    $lastAttribute = new Attribute();
+                    $lastAttribute->setName($c->nodeValue);
+
+                    break;
+                case 'dd': {
+                    /** @var Attribute $lastAttribute */
+                    $lastAttribute->setValue($c->nodeValue);
+                    $result[] = $lastAttribute;
+                    $lastAttribute = null;
+
+                    break;
+                }
+            }
         }
 
-        return [];
+        return $result;
     }
 }

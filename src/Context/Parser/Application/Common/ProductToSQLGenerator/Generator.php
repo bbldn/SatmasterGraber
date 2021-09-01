@@ -225,7 +225,10 @@ class Generator
 
         $result = [];
         foreach ($attributes as $attribute) {
-            $result[] = $this->attributeToSQLGenerator->generate($attribute, $productId);
+            $result = [
+                ...$result,
+                ...$this->attributeToSQLGenerator->generate($attribute, $productId),
+            ];
         }
 
         return $result;
