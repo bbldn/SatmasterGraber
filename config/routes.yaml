@@ -1,3 +1,7 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+jsonrpc_entry_point:
+    path: /api
+    controller: App\Context\Api\Infrastructure\Controller\FrontController::entryPoint

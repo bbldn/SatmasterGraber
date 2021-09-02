@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 abstract class JSONRPCController extends AbstractController
 {
-    public abstract function getAliases(): array;
+    protected abstract function getAliases(): array;
 
     /**
      * @param Request $request
@@ -26,7 +26,7 @@ abstract class JSONRPCController extends AbstractController
         }
 
         $method = $aliases[$method];
-        $arguments = new Arguments($request->get('arguments'));
+        $arguments = new Arguments($request->get('params'), $request->get('id'));
 
         return call_user_func([$this, $method], $arguments);
     }
@@ -37,7 +37,7 @@ abstract class JSONRPCController extends AbstractController
      * @param mixed $id
      * @return JSONRPCResponse
      */
-    public function jsonrpc($result = null, $error = null, $id = null): JSONRPCResponse
+    protected function jsonrpc($result = null, $error = null, $id = null): JSONRPCResponse
     {
         return new JSONRPCResponse($result, $error, $id);
     }

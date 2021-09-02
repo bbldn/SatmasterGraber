@@ -4,26 +4,26 @@ namespace App\Context\Common\Domain\Arguments;
 
 class Arguments
 {
-    private ?array $arguments;
+    private ?array $params;
 
     private $id;
 
     /**
-     * @param array|null $arguments
+     * @param array|null $params
      * @param null $id
      */
-    public function __construct(?array $arguments, $id = null)
+    public function __construct(?array $params, $id = null)
     {
-        $this->arguments = $arguments;
+        $this->params = $params;
         $this->id = $id;
     }
 
     /**
      * @return array|null
      */
-    public function getArguments(): ?array
+    public function getParams(): ?array
     {
-        return $this->arguments;
+        return $this->params;
     }
 
     /**
