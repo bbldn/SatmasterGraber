@@ -3,6 +3,7 @@
 namespace App\Context\Api\Application\CommandHandler;
 
 use Exception;
+use App\Context\Api\Domain\State\State;
 use App\Context\Api\Domain\State\Process;
 use App\Context\Api\Domain\State\Initialization;
 use App\Context\Api\Domain\Message\GenerateArchive;
@@ -25,10 +26,10 @@ class StartProcessHandler implements Base
 
     /**
      * @param StartProcess $command
-     * @return bool
+     * @return State
      * @throws Exception
      */
-    public function __invoke(StartProcess $command): bool
+    public function __invoke(StartProcess $command): State
     {
         $userId = $command->getUserId();
         $file = new StateFile("/tmp/graber/$userId.json");
@@ -43,6 +44,6 @@ class StartProcessHandler implements Base
         $message->setDestinationImagesPath($command->getDestinationImagesPath());
         $this->messageBus->dispatch($message);
 
-        return true;
+        return $file->readState();
     }
 }

@@ -6,38 +6,38 @@ class Error implements State
 {
     use StateTrait;
 
-    private string $text;
+    private string $message;
 
     private ?int $code;
 
     /**
-     * @param string $text
+     * @param string $message
      * @param int|null $code
      */
     public function __construct(
-        string $text,
+        string $message,
         ?int $code = null
     )
     {
-        $this->text = $text;
+        $this->message = $message;
         $this->code = $code;
     }
 
     /**
      * @return string
      */
-    public function getText(): string
+    public function getMessage(): string
     {
-        return $this->text;
+        return $this->message;
     }
 
     /**
-     * @param string $text
+     * @param string $message
      * @return Error
      */
-    public function setText(string $text): self
+    public function setMessage(string $message): self
     {
-        $this->text = $text;
+        $this->message = $message;
 
         return $this;
     }
