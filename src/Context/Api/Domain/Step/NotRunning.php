@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Context\Api\Application\Common\Step;
+namespace App\Context\Api\Domain\Step;
 
 class NotRunning implements Step
 {

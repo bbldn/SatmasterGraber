@@ -2,7 +2,7 @@
 
 namespace App\Context\Api\Infrastructure\Controller;
 
-use App\Context\Api\Application\Query\GetState;
+use App\Context\Api\Application\Query\GetProcessState;
 use App\Context\Common\Domain\Arguments\Arguments;
 use App\Context\Common\Application\QueryBus\QueryBus;
 use App\Context\Common\Domain\Response\JSONRPCResponse;
@@ -41,7 +41,7 @@ class FrontController extends JSONRPCController
         $session = $arguments->getRequest()->getSession();
         $userId = (string)$session->get('id');
 
-        $query = new GetState($userId);
+        $query = new GetProcessState($userId);
         $result = $this->queryBus->execute($query);
 
         return $this->jsonrpc($result, null, $arguments->getId());

@@ -4,7 +4,7 @@ namespace App\Context\Api\Application\Query;
 
 use App\Context\Common\Application\QueryBus\Query;
 
-class GetState implements Query
+class GetProcessState implements Query
 {
     private string $userId;
 

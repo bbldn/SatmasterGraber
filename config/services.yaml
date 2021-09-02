@@ -19,12 +19,16 @@ services:
         class: App\Context\Parser\Application\Common\ProductParser\ParserImplDecorated
 
     #Queries
-    App\Context\Api\Application\Query\GetStateHandler:
+    App\Context\Api\Application\Query\GetProcessStateHandler:
         public: true
         autowire: true
-        class: App\Context\Api\Application\QueryHandler\GetStateHandler
+        class: App\Context\Api\Application\QueryHandler\GetProcessStateHandler
 
     #Commands
+    App\Context\Api\Application\Command\StartProcessHandler:
+        public: true
+        autowire: true
+        class: App\Context\Api\Application\CommandHandler\StartProcessHandler
     App\Context\Api\Application\Command\GenerateArchiveHandler:
         public: true
         autowire: true
