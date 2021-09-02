@@ -2,6 +2,7 @@
 
 namespace App\Context\Api\Infrastructure\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Context\Common\Domain\Arguments\Arguments;
 use App\Context\Common\Domain\Response\JSONRPCResponse;
 use App\Context\Common\Infrastructure\Controller\JSONRPCController;
