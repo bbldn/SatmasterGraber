@@ -18,7 +18,8 @@ class JSONRPCResponse extends Response
      * @param mixed $id
      * @param int $status
      * @param array $headers
-     * @throws Throwable
+     *
+     * @noinspection PhpDocMissingThrowsInspection
      */
     public function __construct(
         $result = null,

@@ -36,7 +36,6 @@ abstract class JSONRPCController extends AbstractController
      * @param mixed $error
      * @param mixed $id
      * @return JSONRPCResponse
-     * @throws Throwable
      */
     public function jsonrpc($result = null, $error = null, $id = null): JSONRPCResponse
     {
