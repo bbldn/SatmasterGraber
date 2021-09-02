@@ -3,10 +3,12 @@
 namespace App\Context\Api\Infrastructure\Controller;
 
 use Throwable;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Context\Common\Domain\Arguments\Arguments;
 use App\Context\Api\Application\Command\StartProcess;
 use App\Context\Common\Application\QueryBus\QueryBus;
+use App\Context\Api\Application\Command\ResetProcess;
 use App\Context\Api\Application\Query\GetProcessState;
 use App\Context\Common\Domain\Response\JSONRPCResponse;
 use App\Context\Common\Application\CommandBus\CommandBus;
@@ -48,9 +50,9 @@ class FrontController extends JSONRPCController
      * @param Arguments $arguments
      * @return string
      */
-    private function getUserId(Arguments $arguments): string
+    private function getUserId(Request $request): string
     {
-        $session = $arguments->getRequest()->getSession();
+        $session = $request->getSession();
         if (false === $session->has('id')) {
             $userId = uniqid();
             $session->set('id', $userId);
@@ -67,7 +69,7 @@ class FrontController extends JSONRPCController
      */
     public function startProcess(Arguments $arguments): JSONRPCResponse
     {
-        $userId = $this->getUserId($arguments);
+        $userId = $this->getUserId($arguments->getRequest());
 
         $params = $arguments->getParams();
         $command = new StartProcess(
@@ -92,7 +94,7 @@ class FrontController extends JSONRPCController
      */
     public function getProcessState(Arguments $arguments): JSONRPCResponse
     {
-        $userId = $this->getUserId($arguments);
+        $userId = $this->getUserId($arguments->getRequest());
 
         $query = new GetProcessState($userId);
         $result = $this->queryBus->execute($query);
@@ -107,5 +109,23 @@ class FrontController extends JSONRPCController
     public function archiveAction(string $fileName): Response
     {
         return $this->file("/tmp/graber/$fileName", $fileName);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function resetAction(Request $request): Response
+    {
+        $userId = $this->getUserId($request);
+        $command = new ResetProcess($userId);
+
+        try {
+            $result = $this->commandBus->execute($command);
+
+            return $this->jsonrpc($result);
+        } catch (Throwable $e) {
+            return $this->jsonrpc(null, $e->getMessage());
+        }
     }
 }

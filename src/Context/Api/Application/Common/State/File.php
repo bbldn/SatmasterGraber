@@ -20,6 +20,16 @@ class File
     /**
      * @return void
      */
+    public function remove(): void
+    {
+        if (true === file_exists($this->fileName)) {
+            unlink($this->fileName);
+        }
+    }
+
+    /**
+     * @return void
+     */
     public function create(): void
     {
         $this->whiteState(new NotRunning());

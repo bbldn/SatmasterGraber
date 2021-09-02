@@ -2,6 +2,10 @@ index:
     path: /
     controller: App\Controller\MainController::indexAction
 
+reset:
+    path: /reset
+    controller: App\Context\Api\Infrastructure\Controller\FrontController::resetAction
+
 jsonrpc_entry_point:
     path: /api
     controller: App\Context\Api\Infrastructure\Controller\FrontController::entryPoint

@@ -29,6 +29,10 @@ services:
         public: true
         autowire: true
         class: App\Context\Api\Application\CommandHandler\StartProcessHandler
+    App\Context\Api\Application\Command\ResetProcessHandler:
+        public: true
+        autowire: true
+        class: App\Context\Api\Application\CommandHandler\ResetProcessHandler
     App\Context\Api\Application\Command\GenerateArchiveHandler:
         public: true
         autowire: true
