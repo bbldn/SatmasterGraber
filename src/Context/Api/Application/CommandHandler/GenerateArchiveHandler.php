@@ -125,7 +125,7 @@ class GenerateArchiveHandler implements Base
 
         $zip->close();
 
-        return $fileName;
+        return "{$command->getUserId()}.zip";
     }
 
     /**
