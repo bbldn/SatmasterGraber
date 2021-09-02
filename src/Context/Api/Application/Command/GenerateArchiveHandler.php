@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Context\Front\Application\Command;
+namespace App\Context\Api\Application\Command;
 
 use App\Context\Common\Application\CommandBus\CommandHandler;
 

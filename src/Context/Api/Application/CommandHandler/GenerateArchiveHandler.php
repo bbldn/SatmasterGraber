@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Context\Front\Application\CommandHandler;
+namespace App\Context\Api\Application\CommandHandler;
 
 use Throwable;
 use ZipArchive;
@@ -8,17 +8,17 @@ use JsonSerializable;
 use Psr\Log\LoggerInterface as Logger;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Context\Parser\Domain\ValueObject\URL;
-use App\Context\Front\Application\Command\GenerateArchive;
-use App\Context\Front\Application\CommandHandler\Step\Error;
-use App\Context\Front\Application\CommandHandler\Step\Finish;
+use App\Context\Api\Application\Command\GenerateArchive;
+use App\Context\Api\Application\CommandHandler\Step\Error;
+use App\Context\Api\Application\CommandHandler\Step\Finish;
+use App\Context\Api\Application\CommandHandler\Step\Process;
 use App\Context\Common\Application\Helper\ExceptionFormatter;
-use App\Context\Front\Application\CommandHandler\Step\Process;
 use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
+use App\Context\Api\Application\CommandHandler\Step\Initialization;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use App\Context\Front\Application\CommandHandler\Step\Initialization;
+use App\Context\Api\Application\Command\GenerateArchiveHandler as Base;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use App\Context\Front\Application\Command\GenerateArchiveHandler as Base;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use App\Context\Parser\Application\Common\ProductToSQLGenerator\Arguments;
 use App\Context\Parser\Application\Common\ProductParser\Parser as ProductParser;

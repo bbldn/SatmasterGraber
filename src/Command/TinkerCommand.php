@@ -5,8 +5,8 @@ namespace App\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use App\Context\Api\Application\Command\GenerateArchive;
 use App\Context\Common\Application\CommandBus\CommandBus;
-use App\Context\Front\Application\Command\GenerateArchive;
 
 class TinkerCommand extends Command
 {

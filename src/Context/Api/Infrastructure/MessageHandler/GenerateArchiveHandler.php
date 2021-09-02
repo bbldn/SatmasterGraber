@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Context\Front\Infrastructure\MessageHandler;
+namespace App\Context\Api\Infrastructure\MessageHandler;
 
-use App\Context\Front\Domain\Message\GenerateArchive;
+use App\Context\Api\Domain\Message\GenerateArchive;
 use App\Context\Common\Application\CommandBus\CommandBus;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
-use App\Context\Front\Application\Command\GenerateArchive as GenerateArchiveCommand;
+use App\Context\Api\Application\Command\GenerateArchive as GenerateArchiveCommand;
 
 class GenerateArchiveHandler implements MessageHandlerInterface
 {

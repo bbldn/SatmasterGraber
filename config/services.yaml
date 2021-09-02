@@ -19,10 +19,10 @@ services:
         class: App\Context\Parser\Application\Common\ProductParser\ParserImplDecorated
 
     #Commands
-    App\Context\Front\Application\Command\GenerateArchiveHandler:
+    App\Context\Api\Application\Command\GenerateArchiveHandler:
         public: true
         autowire: true
-        class: App\Context\Front\Application\CommandHandler\GenerateArchiveHandler
+        class: App\Context\Api\Application\CommandHandler\GenerateArchiveHandler
     App\Context\Parser\Application\Command\ParseProductByURLHandler:
         public: true
         autowire: true

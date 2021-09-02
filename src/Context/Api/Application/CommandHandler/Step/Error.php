@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Context\Front\Application\CommandHandler\Step;
+namespace App\Context\Api\Application\CommandHandler\Step;
 
 class Error implements Step
 {

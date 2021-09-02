@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Context\Front\Domain\Message;
+namespace App\Context\Api\Domain\Message;
 
 class GenerateArchive
 {
