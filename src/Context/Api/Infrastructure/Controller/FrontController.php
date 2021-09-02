@@ -49,6 +49,11 @@ class FrontController extends JSONRPCController
      */
     public function startProcess(Arguments $arguments): JSONRPCResponse
     {
+        $session = $arguments->getRequest()->getSession();
+        if (false === $session->has('id')) {
+            $session->set('id', uniqid());
+        }
+
         $params = $arguments->getParams();
         $command = new StartProcess(
             $params[0],
