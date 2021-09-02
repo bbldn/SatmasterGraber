@@ -2,12 +2,12 @@ index:
     path: /
     controller: App\Controller\MainController::indexAction
 
+jsonrpc_entry_point:
+    path: /api
+    controller: App\Context\Api\Infrastructure\Controller\FrontController::entryPoint
+
 archive_file:
     path: /archive/{fileName}
     controller: App\Context\Api\Infrastructure\Controller\FrontController::archiveAction
     requirements:
         fileName: .+
-
-jsonrpc_entry_point:
-    path: /api
-    controller: App\Context\Api\Infrastructure\Controller\FrontController::entryPoint
