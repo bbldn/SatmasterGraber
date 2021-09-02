@@ -45,7 +45,7 @@ class JSONRPCResponse extends Response
     public function setData($result = null, $error = null, $id = null): self
     {
         $data = [
-            'jsonrpc' => 2.0,
+            'jsonrpc' => '2.0',
             'result' => $result,
             'error' => $error,
             'id' => $id,

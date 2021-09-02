@@ -2,7 +2,6 @@
 
 namespace App\Context\Api\Infrastructure\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use App\Context\Common\Domain\Arguments\Arguments;
 use App\Context\Common\Domain\Response\JSONRPCResponse;
 use App\Context\Common\Infrastructure\Controller\JSONRPCController;
@@ -17,20 +16,8 @@ class FrontController extends JSONRPCController
     public function getAliases(): array
     {
         return [
-            'sum' => 'sum',
             'getProcessState' => 'getProcessState',
         ];
-    }
-
-    /**
-     * @param Arguments $arguments
-     * @return JSONRPCResponse
-     */
-    public function sum(Arguments $arguments): JSONRPCResponse
-    {
-        $params = $arguments->getParams();
-
-        return $this->jsonrpc($params[0] + $params[1], null, $arguments->getId());
     }
 
     /**

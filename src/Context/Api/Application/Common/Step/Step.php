@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Context\Api\Application\CommandHandler\Step;
+namespace App\Context\Api\Application\Common\Step;
 
 use JsonSerializable;
 
