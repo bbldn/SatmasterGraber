@@ -3,6 +3,7 @@
 namespace App\Context\Api\Infrastructure\Controller;
 
 use Throwable;
+use Symfony\Component\HttpFoundation\Response;
 use App\Context\Common\Domain\Arguments\Arguments;
 use App\Context\Api\Application\Command\StartProcess;
 use App\Context\Common\Application\QueryBus\QueryBus;
@@ -97,5 +98,14 @@ class FrontController extends JSONRPCController
         $result = $this->queryBus->execute($query);
 
         return $this->jsonrpc($result, null, $arguments->getId());
+    }
+
+    /**
+     * @param string $fileName
+     * @return Response
+     */
+    public function archiveAction(string $fileName): Response
+    {
+        return $this->file("/tmp/graber/$fileName", $fileName);
     }
 }

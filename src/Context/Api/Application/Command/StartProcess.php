@@ -10,9 +10,9 @@ class StartProcess implements Command
 
     private string $sourceCategoryUrl;
 
-    private ?int $destinationCategoryId = null;
+    private ?int $destinationCategoryId;
 
-    private ?string $destinationImagesPath = null;
+    private ?string $destinationImagesPath;
 
     /**
      * @param string $userId
