@@ -45,21 +45,35 @@ class FrontController extends JSONRPCController
 
     /**
      * @param Arguments $arguments
+     * @return string
+     */
+    private function getUserId(Arguments $arguments): string
+    {
+        $session = $arguments->getRequest()->getSession();
+        if (false === $session->has('id')) {
+            $userId = uniqid();
+            $session->set('id', $userId);
+
+            return $userId;
+        }
+
+        return (string)$session->get('id');
+    }
+
+    /**
+     * @param Arguments $arguments
      * @return JSONRPCResponse
      */
     public function startProcess(Arguments $arguments): JSONRPCResponse
     {
-        $session = $arguments->getRequest()->getSession();
-        if (false === $session->has('id')) {
-            $session->set('id', uniqid());
-        }
+        $userId = $this->getUserId($arguments);
 
         $params = $arguments->getParams();
         $command = new StartProcess(
+            $userId,
             $params[0],
-            $params[1],
-            $params[2],
-            $params[3]
+            $params[1] ?? null,
+            $params[2] ?? null
         );
 
         try {
@@ -77,13 +91,7 @@ class FrontController extends JSONRPCController
      */
     public function getProcessState(Arguments $arguments): JSONRPCResponse
     {
-        $session = $arguments->getRequest()->getSession();
-        if (false === $session->has('id')) {
-            $userId = uniqid();
-            $session->set('id', $userId);
-        } else {
-            $userId = (string)$session->get('id');
-        }
+        $userId = $this->getUserId($arguments);
 
         $query = new GetProcessState($userId);
         $result = $this->queryBus->execute($query);

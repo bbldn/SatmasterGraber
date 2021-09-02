@@ -31,9 +31,11 @@ class File
      */
     public function whiteState(State $state): void
     {
-        if (false === file_exists($this->fileName) && false === is_dir($this->fileName)) {
+        if (false === file_exists($this->fileName)) {
             $dirName = dirname($this->fileName);
-            mkdir($dirName, 0777, true);
+            if (false === is_dir($dirName)) {
+                mkdir($dirName, 0777, true);
+            }
         }
 
         file_put_contents($this->fileName, json_encode($state));

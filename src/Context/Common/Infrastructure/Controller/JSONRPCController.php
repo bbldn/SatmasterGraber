@@ -17,14 +17,16 @@ abstract class JSONRPCController extends AbstractController
      */
     public function entryPoint(Request $request): JSONRPCResponse
     {
+        $content = json_decode($request->getContent(), true);
+
         $aliases = $this->getAliases();
-        $method = $request->get('method');
+        $method = $content['method'] ?? '';
         if (false === key_exists($method, $aliases)) {
-            return $this->jsonrpc(null, "Method not found: {$method}", $request->get('id'));
+            return $this->jsonrpc(null, "Method not found: {$method}", $content['id'] ?? null);
         }
 
         $method = $aliases[$method];
-        $arguments = new Arguments($request->get('params'), $request, $request->get('id'));
+        $arguments = new Arguments($content['params'] ?? null, $request, $content['id'] ?? null);
 
         return call_user_func([$this, $method], $arguments);
     }
