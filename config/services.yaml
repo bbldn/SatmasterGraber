@@ -18,6 +18,12 @@ services:
     App\Context\Parser\Application\Common\ProductParser\Parser:
         class: App\Context\Parser\Application\Common\ProductParser\ParserImplDecorated
 
+    #Queries
+    App\Context\Api\Application\Query\GetStateHandler:
+        public: true
+        autowire: true
+        class: App\Context\Api\Application\QueryHandler\GetStateHandler
+
     #Commands
     App\Context\Api\Application\Command\GenerateArchiveHandler:
         public: true

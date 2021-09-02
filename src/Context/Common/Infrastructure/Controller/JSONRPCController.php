@@ -2,8 +2,6 @@
 
 namespace App\Context\Common\Infrastructure\Controller;
 
-use Throwable;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use App\Context\Common\Domain\Arguments\Arguments;
 use App\Context\Common\Domain\Response\JSONRPCResponse;
@@ -22,11 +20,11 @@ abstract class JSONRPCController extends AbstractController
         $aliases = $this->getAliases();
         $method = $request->get('method');
         if (false === key_exists($method, $aliases)) {
-            throw new InvalidArgumentException("Method not found: {$method}");
+            return $this->jsonrpc(null, "Method not found: {$method}", $request->get('id'));
         }
 
         $method = $aliases[$method];
-        $arguments = new Arguments($request->get('params'), $request->get('id'));
+        $arguments = new Arguments($request->get('params'), $request, $request->get('id'));
 
         return call_user_func([$this, $method], $arguments);
     }
