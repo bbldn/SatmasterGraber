@@ -17,14 +17,20 @@ class StartProcess implements Command
     /**
      * @param string $userId
      * @param string $sourceCategoryUrl
+     * @param int|null $destinationCategoryId
+     * @param string|null $destinationImagesPath
      */
     public function __construct(
         string $userId,
-        string $sourceCategoryUrl
+        string $sourceCategoryUrl,
+        ?int $destinationCategoryId,
+        ?string $destinationImagesPath
     )
     {
         $this->userId = $userId;
         $this->sourceCategoryUrl = $sourceCategoryUrl;
+        $this->destinationCategoryId = $destinationCategoryId;
+        $this->destinationImagesPath = $destinationImagesPath;
     }
 
     /**
