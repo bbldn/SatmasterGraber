@@ -17,7 +17,7 @@ class Hydrator
      */
     public static function toStep(array $data): State
     {
-        switch ($data['step']) {
+        switch ($data['step'] ?? null) {
             case 'error':
                 return new Error((string)($data['text'] ?? null), $data['code'] ?? null);
             case 'finish':

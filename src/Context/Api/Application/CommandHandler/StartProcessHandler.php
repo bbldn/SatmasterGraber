@@ -7,27 +7,20 @@ use App\Context\Api\Domain\State\Process;
 use App\Context\Api\Domain\State\Initialization;
 use App\Context\Api\Domain\Message\GenerateArchive;
 use App\Context\Api\Application\Command\StartProcess;
+use App\Context\Api\Application\Common\State\File as StateFile;
 use Symfony\Component\Messenger\MessageBusInterface as MessageBus;
 use App\Context\Api\Application\Command\StartProcessHandler as Base;
-use App\Context\Api\Application\Common\Process\Helper as ProcessHelper;
 
 class StartProcessHandler implements Base
 {
     private MessageBus $messageBus;
 
-    private ProcessHelper $processHelper;
-
     /**
      * @param MessageBus $messageBus
-     * @param ProcessHelper $processHelper
      */
-    public function __construct(
-        MessageBus $messageBus,
-        ProcessHelper $processHelper
-    )
+    public function __construct(MessageBus $messageBus)
     {
         $this->messageBus = $messageBus;
-        $this->processHelper = $processHelper;
     }
 
     /**
@@ -38,11 +31,13 @@ class StartProcessHandler implements Base
     public function __invoke(StartProcess $command): bool
     {
         $userId = $command->getUserId();
-        $step = $this->processHelper->getStepByUserId($userId);
-        if (true === in_array(get_class($step), [Initialization::class, Process::class])) {
+        $file = new StateFile("/tmp/graber/$userId.json");
+        $class = get_class($file->readState());
+        if (true === in_array($class, [Initialization::class, Process::class])) {
             throw new Exception('Process already running');
         }
 
+        $file->whiteState(new Initialization('Ждем свободный обработчик'));
         $message = new GenerateArchive($userId, $command->getSourceCategoryUrl());
         $message->setDestinationCategoryId($command->getDestinationCategoryId());
         $message->setDestinationImagesPath($command->getDestinationImagesPath());

@@ -4,7 +4,6 @@ namespace App\Context\Api\Application\CommandHandler;
 
 use Throwable;
 use ZipArchive;
-use JsonSerializable;
 use Psr\Log\LoggerInterface as Logger;
 use App\Context\Api\Domain\State\Error;
 use App\Context\Api\Domain\State\Finish;
@@ -12,6 +11,7 @@ use App\Context\Api\Domain\State\Process;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Context\Parser\Domain\ValueObject\URL;
 use App\Context\Api\Domain\State\Initialization;
+use App\Context\Api\Application\Common\State\File as StateFile;
 use App\Context\Api\Application\Command\GenerateArchive;
 use App\Context\Common\Application\Helper\ExceptionFormatter;
 use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
@@ -97,16 +97,6 @@ class GenerateArchiveHandler implements Base
 
     /**
      * @param GenerateArchive $command
-     * @param JsonSerializable $state
-     * @return void
-     */
-    private function setState(GenerateArchive $command, JsonSerializable $state): void
-    {
-        file_put_contents("/tmp/graber/{$command->getUserId()}.json", json_encode($state));
-    }
-
-    /**
-     * @param GenerateArchive $command
      * @return string
      */
     private function createArchive(GenerateArchive $command): string
@@ -140,20 +130,21 @@ class GenerateArchiveHandler implements Base
 
     /**
      * @param GenerateArchive $command
+     * @param StateFile $file
      * @return void
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ClientExceptionInterface
      */
-    private function invoke(GenerateArchive $command): void
+    private function invoke(GenerateArchive $command, StateFile $file): void
     {
         $calculatePercent = static fn(int $current, int $total): int => (int)(($current * 100) / $total);
 
         $this->createFolders($command);
-        $this->setState($command, new Initialization('Получаем список товаров'));
+        $file->whiteState(new Initialization('Получаем список товаров'));
         $productsUrls = $this->categoryParser->parse(new URL($command->getSourceCategoryUrl()));
-        $this->setState($command, new Initialization('Список товаров успешно получен'));
+        $file->whiteState(new Initialization('Список товаров успешно получен'));
 
         $dumpsFileName = "/tmp/graber/{$command->getUserId()}/dumps/dumps.sql";
         file_put_contents($dumpsFileName, $this->productToSQLGenerator->sqlStartTransaction(), FILE_APPEND);
@@ -177,17 +168,14 @@ class GenerateArchiveHandler implements Base
                 file_put_contents($fileName, $response->getContent(false));
             }
 
-            $this->setState(
-                $command,
-                new Process($calculatePercent($index + 1, count($productsUrls)), 'Обрабатываем товары')
-            );
+            $file->whiteState(new Process($calculatePercent($index + 1, count($productsUrls)), 'Обрабатываем товары'));
         }
         file_put_contents($dumpsFileName, $this->productToSQLGenerator->sqlCommit(), FILE_APPEND);
 
         $archivePath = $this->createArchive($command);
         $this->removeFolders($command);
 
-        $this->setState($command, new Finish($archivePath, 'Архив успешно создан'));
+        $file->whiteState(new Finish($archivePath, 'Архив успешно создан'));
     }
 
     /**
@@ -196,11 +184,13 @@ class GenerateArchiveHandler implements Base
      */
     public function __invoke(GenerateArchive $command): void
     {
+        $file = new StateFile("/tmp/graber/{$command->getUserId()}.json");
+
         try {
-            $this->invoke($command);
+            $this->invoke($command, $file);
         }  catch (Throwable $e) {
             $this->logger->error(ExceptionFormatter::e($e));
-            $this->setState($command, new Error('Ошибка сервера. Обратитесь к администратору.'));
+            $file->whiteState(new Error('Ошибка сервера. Обратитесь к администратору.'));
         }
     }
 }
