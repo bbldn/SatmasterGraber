@@ -78,7 +78,12 @@ class FrontController extends JSONRPCController
     public function getProcessState(Arguments $arguments): JSONRPCResponse
     {
         $session = $arguments->getRequest()->getSession();
-        $userId = (string)$session->get('id');
+        if (false === $session->has('id')) {
+            $userId = uniqid();
+            $session->set('id', $userId);
+        } else {
+            $userId = (string)$session->get('id');
+        }
 
         $query = new GetProcessState($userId);
         $result = $this->queryBus->execute($query);
