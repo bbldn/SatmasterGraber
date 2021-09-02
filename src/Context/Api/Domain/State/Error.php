@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Context\Api\Domain\Step;
+namespace App\Context\Api\Domain\State;
 
-class Error implements Step
+class Error implements State
 {
-    use StepTrait;
+    use StateTrait;
 
     private string $text;
 

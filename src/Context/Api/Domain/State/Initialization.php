@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Context\Api\Domain\Step;
+namespace App\Context\Api\Domain\State;
 
-class Initialization implements Step
+class Initialization implements State
 {
-    use StepTrait;
+    use StateTrait;
 
     private string $message;
 

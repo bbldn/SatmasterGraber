@@ -3,8 +3,8 @@
 namespace App\Context\Api\Application\CommandHandler;
 
 use Exception;
-use App\Context\Api\Domain\Step\Process;
-use App\Context\Api\Domain\Step\Initialization;
+use App\Context\Api\Domain\State\Process;
+use App\Context\Api\Domain\State\Initialization;
 use App\Context\Api\Domain\Message\GenerateArchive;
 use App\Context\Api\Application\Command\StartProcess;
 use Symfony\Component\Messenger\MessageBusInterface as MessageBus;

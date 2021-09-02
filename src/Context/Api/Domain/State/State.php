@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Context\Api\Domain\Step;
+namespace App\Context\Api\Domain\State;
 
 use JsonSerializable;
 
-interface Step extends JsonSerializable
+interface State extends JsonSerializable
 {
     /**
      * @return string

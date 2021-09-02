@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Context\Api\Domain\Step;
+namespace App\Context\Api\Domain\State;
 
-trait StepTrait
+trait StateTrait
 {
     /**
      * @return array

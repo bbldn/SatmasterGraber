@@ -2,17 +2,17 @@
 
 namespace App\Context\Api\Application\Common\Process;
 
-use App\Context\Api\Domain\Step\Step;
-use App\Context\Api\Domain\Step\NotRunning;
-use App\Context\Api\Application\Common\Step\Hydrator;
+use App\Context\Api\Domain\State\State;
+use App\Context\Api\Domain\State\NotRunning;
+use App\Context\Api\Application\Common\State\Hydrator;
 
 class Helper
 {
     /**
      * @param string $userId
-     * @return Step
+     * @return State
      */
-    public function getStepByUserId(string $userId): Step
+    public function getStepByUserId(string $userId): State
     {
         $fileName = "/tmp/graber/$userId.json";
         if (false === file_exists($fileName)) {

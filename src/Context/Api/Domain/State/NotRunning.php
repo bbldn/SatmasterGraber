@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Context\Api\Domain\Step;
+namespace App\Context\Api\Domain\State;
 
-class NotRunning implements Step
+class NotRunning implements State
 {
-    use StepTrait;
+    use StateTrait;
 
     /**
      * @return string

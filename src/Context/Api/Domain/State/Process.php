@@ -1,43 +1,43 @@
 <?php
 
-namespace App\Context\Api\Domain\Step;
+namespace App\Context\Api\Domain\State;
 
-class Finish implements Step
+class Process implements State
 {
-    use StepTrait;
+    use StateTrait;
 
-    private string $url;
+    private int $percent;
 
     private string $message;
 
     /**
-     * @param string $url
+     * @param int $percent
      * @param string $message
      */
     public function __construct(
-        string $url,
+        int $percent,
         string $message
     )
     {
-        $this->url = $url;
+        $this->percent = $percent;
         $this->message = $message;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getUrl(): string
+    public function getPercent(): int
     {
-        return $this->url;
+        return $this->percent;
     }
 
     /**
-     * @param string $url
-     * @return Finish
+     * @param int $percent
+     * @return self
      */
-    public function setUrl(string $url): self
+    public function setPercent(int $percent): self
     {
-        $this->url = $url;
+        $this->percent = $percent;
 
         return $this;
     }
@@ -52,7 +52,7 @@ class Finish implements Step
 
     /**
      * @param string $message
-     * @return Finish
+     * @return self
      */
     public function setMessage(string $message): self
     {
@@ -66,6 +66,6 @@ class Finish implements Step
      */
     public function getStep(): string
     {
-        return 'finish';
+        return 'process';
     }
 }

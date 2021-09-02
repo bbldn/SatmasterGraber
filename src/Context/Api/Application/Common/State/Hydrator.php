@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Context\Api\Application\Common\Step;
+namespace App\Context\Api\Application\Common\State;
 
-use App\Context\Api\Domain\Step\Step;
-use App\Context\Api\Domain\Step\Error;
-use App\Context\Api\Domain\Step\Finish;
-use App\Context\Api\Domain\Step\Process;
-use App\Context\Api\Domain\Step\NotRunning;
-use App\Context\Api\Domain\Step\Initialization;
+use App\Context\Api\Domain\State\State;
+use App\Context\Api\Domain\State\Error;
+use App\Context\Api\Domain\State\Finish;
+use App\Context\Api\Domain\State\Process;
+use App\Context\Api\Domain\State\NotRunning;
+use App\Context\Api\Domain\State\Initialization;
 
 class Hydrator
 {
     /**
      * @param array $data
-     * @return Step
+     * @return State
      */
-    public static function toStep(array $data): Step
+    public static function toStep(array $data): State
     {
         switch ($data['step']) {
             case 'error':
