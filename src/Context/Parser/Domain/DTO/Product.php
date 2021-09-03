@@ -29,7 +29,7 @@ class Product
     /**
      * @var string[]|null
      *
-     * @psalm-param list<string>|null
+     * @psalm-param array<string, string>|null
      */
     private ?array $descriptionImages = null;
 
@@ -158,7 +158,7 @@ class Product
     /**
      * @return string[]|null
      *
-     * @psalm-return list<string>|null
+     * @psalm-return array<string, string>|null
      */
     public function getDescriptionImages(): ?array
     {
@@ -169,7 +169,7 @@ class Product
      * @param string[]|null $descriptionImages
      * @return Product
      *
-     * @psalm-param list<string>|null $descriptionImages
+     * @psalm-param array<string, string>|null $descriptionImages
      */
     public function setDescriptionImages(?array $descriptionImages): self
     {
