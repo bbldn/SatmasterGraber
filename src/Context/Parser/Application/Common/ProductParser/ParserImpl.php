@@ -6,6 +6,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use App\Context\Parser\Domain\DTO\Product;
 use App\Context\Parser\Domain\DTO\Attribute;
 use App\Context\Parser\Domain\ValueObject\URL;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -43,7 +44,7 @@ class ParserImpl implements Parser
     private function getContent(string $url): ?string
     {
         $response = $this->httpClient->request('GET', $url);
-        if (200 !== $response->getStatusCode()) {
+        if (Response::HTTP_OK !== $response->getStatusCode()) {
             return null;
         }
 
@@ -137,6 +138,26 @@ class ParserImpl implements Parser
     }
 
     /**
+     * @param string|null $description
+     * @return null|array
+     *
+     * @psalm-return null|array<string, string>
+     */
+    private function parseDescriptionImages(?string $description): ?array
+    {
+        if (null === $description) {
+            return null;
+        }
+
+        $closure = static fn(Crawler $c): string => $c->attr('src');
+
+        $crawler = new Crawler($description);
+        $array = $crawler->filter('img')->each($closure);
+
+        return array_combine($array, $array);
+    }
+
+    /**
      * @param URL $url
      * @return Product
      * @throws ClientExceptionInterface
@@ -150,13 +171,16 @@ class ParserImpl implements Parser
 
         $crawler = new Crawler($html);
 
+        $description = $this->parseDescription($crawler);
+
         $result = new Product();
+        $result->setDescription($description);
         $result->setId($this->parseId($crawler));
         $result->setName($this->parseName($crawler));
         $result->setPrice($this->parsePrice($crawler));
         $result->setImages($this->parseImages($crawler));
-        $result->setDescription($this->parseDescription($crawler));
         $result->setAttributes($this->parseAttributes($crawler, $result));
+        $result->setDescriptionImages($this->parseDescriptionImages($description));
 
         return $result;
     }

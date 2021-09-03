@@ -4,6 +4,7 @@ namespace App\Context\Parser\Application\Common\CategoryParser;
 
 use Symfony\Component\DomCrawler\Crawler;
 use App\Context\Parser\Domain\ValueObject\URL;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -33,7 +34,7 @@ class Parser
     private function getContent(string $url): ?string
     {
         $response = $this->httpClient->request('GET', $url);
-        if (200 !== $response->getStatusCode()) {
+        if (Response::HTTP_OK !== $response->getStatusCode()) {
             return null;
         }
 
@@ -63,7 +64,7 @@ class Parser
         $result = [];
         foreach ($data as $item) {
             if ('JavaScript:;' !== $item) {
-                $result[] = "https://satmaster.kiev.ua/{$item}";
+                $result[] = "https://satmaster.kiev.ua/$item";
             } else {
                 $result[] = $url;
             }
