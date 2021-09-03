@@ -47,7 +47,7 @@ class FrontController extends JSONRPCController
     }
 
     /**
-     * @param Arguments $arguments
+     * @param Request $request
      * @return string
      */
     private function getUserId(Request $request): string

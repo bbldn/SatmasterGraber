@@ -9,5 +9,5 @@ interface State extends JsonSerializable
     /**
      * @return string
      */
-    public function getStep(): string;
+    public static function getStep(): string;
 }

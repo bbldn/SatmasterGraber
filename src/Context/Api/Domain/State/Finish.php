@@ -64,7 +64,7 @@ class Finish implements State
     /**
      * @return string
      */
-    public function getStep(): string
+    public static function getStep(): string
     {
         return 'finish';
     }

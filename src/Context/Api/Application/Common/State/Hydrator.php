@@ -18,15 +18,15 @@ class Hydrator
     public static function toStep(array $data): State
     {
         switch ($data['step'] ?? null) {
-            case 'error':
+            case Error::getStep():
                 return new Error((string)($data['text'] ?? null), $data['code'] ?? null);
-            case 'finish':
+            case Finish::getStep():
                 return new Finish((string)($data['url'] ?? null), (string)($data['message'] ?? null));
-            case 'initialization':
+            case Initialization::getStep():
                 return new Initialization((string)($data['message'] ?? null));
-            case 'process':
+            case Process::getStep():
                 return new Process((int)($data['percent'] ?? 0), (string)($data['message'] ?? null));
-            case 'not-running':
+            case NotRunning::getStep():
             default:
                 return new NotRunning();
         }

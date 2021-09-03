@@ -10,7 +10,7 @@ trait StateTrait
     public function jsonSerialize(): array
     {
         $result = get_object_vars($this);
-        $result['step'] = $this->getStep();
+        $result['step'] = static::getStep();
 
         return $result;
     }
