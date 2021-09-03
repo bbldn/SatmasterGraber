@@ -10,6 +10,8 @@ class Product
 
     private ?string $name = null;
 
+    private ?string $description = null;
+
     /**
      * @var string[]|null
      *
@@ -17,14 +19,19 @@ class Product
      */
     private ?array $images = null;
 
-    private ?string $description = null;
-
     /**
      * @var Attribute[]|null
      *
      * @psalm-var list<Attribute>|null
      */
     private ?array $attributes = null;
+
+    /**
+     * @var string[]|null
+     *
+     * @psalm-param list<string>|null
+     */
+    private ?array $descriptionImages = null;
 
     /**
      * @return int|null
@@ -84,25 +91,6 @@ class Product
     }
 
     /**
-     * @return array|null
-     */
-    public function getImages(): ?array
-    {
-        return $this->images;
-    }
-
-    /**
-     * @param array|null $images
-     * @return Product
-     */
-    public function setImages(?array $images): self
-    {
-        $this->images = $images;
-
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getDescription(): ?string
@@ -117,6 +105,29 @@ class Product
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]|null
+     *
+     * @psalm-return list<string>|null
+     */
+    public function getImages(): ?array
+    {
+        return $this->images;
+    }
+
+    /**
+     * @param string[]|null $images
+     * @return Product
+     *
+     * @psalm-param list<string>|null $images
+     */
+    public function setImages(?array $images): self
+    {
+        $this->images = $images;
 
         return $this;
     }
@@ -140,6 +151,29 @@ class Product
     public function setAttributes(?array $attributes): Product
     {
         $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]|null
+     *
+     * @psalm-return list<string>|null
+     */
+    public function getDescriptionImages(): ?array
+    {
+        return $this->descriptionImages;
+    }
+
+    /**
+     * @param string[]|null $descriptionImages
+     * @return Product
+     *
+     * @psalm-param list<string>|null $descriptionImages
+     */
+    public function setDescriptionImages(?array $descriptionImages): self
+    {
+        $this->descriptionImages = $descriptionImages;
 
         return $this;
     }
