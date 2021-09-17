@@ -27,13 +27,6 @@ class Product
     private ?array $attributes = null;
 
     /**
-     * @var string[]|null
-     *
-     * @psalm-param array<string, string>|null
-     */
-    private ?array $descriptionImages = null;
-
-    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -151,29 +144,6 @@ class Product
     public function setAttributes(?array $attributes): Product
     {
         $this->attributes = $attributes;
-
-        return $this;
-    }
-
-    /**
-     * @return string[]|null
-     *
-     * @psalm-return array<string, string>|null
-     */
-    public function getDescriptionImages(): ?array
-    {
-        return $this->descriptionImages;
-    }
-
-    /**
-     * @param string[]|null $descriptionImages
-     * @return Product
-     *
-     * @psalm-param array<string, string>|null $descriptionImages
-     */
-    public function setDescriptionImages(?array $descriptionImages): self
-    {
-        $this->descriptionImages = $descriptionImages;
 
         return $this;
     }

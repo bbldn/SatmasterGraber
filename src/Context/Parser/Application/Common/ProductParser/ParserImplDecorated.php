@@ -45,14 +45,34 @@ class ParserImplDecorated implements Parser
         $doc->loadHTML("<?xml encoding=\"utf-8\" ?>$description");
         $crawler = new Crawler($doc);
 
-        $closure = static function (Crawler $c) use ($doc): void {
+        /** Удаление ссылок */
+        $closureA = static function (Crawler $c) use ($doc): void {
             foreach ($c as $child) {
                 $node = $doc->createElement('p', $child->nodeValue);
                 $child->parentNode->replaceChild($node, $child);
             }
         };
+        $crawler->filter('a')->each($closureA);
+        /** Конец */
 
-        $crawler->filter('a')->each($closure);
+        /** Удаление картинок из описания */
+        $closureImg = static function (Crawler $c): void {
+            foreach ($c as $child) {
+                $child->parentNode->removeChild($child);
+            }
+        };
+        $crawler->filter('img')->each($closureImg);
+        /** Конец */
+
+        /** Удаление пустых строк */
+        $closureBr = static function (Crawler $c): void {
+            foreach ($c as $child) {
+                $child->parentNode->removeChild($child);
+            }
+        };
+        $crawler->filter('br:nth-of-type(2n)')->each($closureBr);
+        /** Конец */
+
         $product->setDescription($crawler->html());
     }
 

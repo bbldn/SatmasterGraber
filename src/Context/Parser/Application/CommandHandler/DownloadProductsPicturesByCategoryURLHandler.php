@@ -45,6 +45,7 @@ class DownloadProductsPicturesByCategoryURLHandler implements Base
 
     /**
      * @param DownloadProductsPicturesByCategoryURL $command
+     * @return void
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
