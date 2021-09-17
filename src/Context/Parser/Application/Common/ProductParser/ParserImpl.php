@@ -138,26 +138,6 @@ class ParserImpl implements Parser
     }
 
     /**
-     * @param string|null $description
-     * @return null|array
-     *
-     * @psalm-return null|array<string, string>
-     */
-    private function parseDescriptionImages(?string $description): ?array
-    {
-        if (null === $description) {
-            return null;
-        }
-
-        $closure = static fn(Crawler $c): string => $c->attr('src');
-
-        $crawler = new Crawler($description);
-        $array = $crawler->filter('img')->each($closure);
-
-        return array_combine($array, $array);
-    }
-
-    /**
      * @param URL $url
      * @return Product
      * @throws ClientExceptionInterface
@@ -180,7 +160,6 @@ class ParserImpl implements Parser
         $result->setPrice($this->parsePrice($crawler));
         $result->setImages($this->parseImages($crawler));
         $result->setAttributes($this->parseAttributes($crawler, $result));
-        $result->setDescriptionImages($this->parseDescriptionImages($description));
 
         return $result;
     }

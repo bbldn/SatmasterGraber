@@ -81,9 +81,22 @@ class Parser
      */
     private function parseProductsUrls(string $html): array
     {
-        $closure = static fn(Crawler $c) => $c->attr('href');
+        $data = (new Crawler($html))->filter('.item_block')->each(static function(Crawler $crawler): array {
+            if ('item_block notavailable' === $crawler->attr('class')) {
+                return [];
+            }
 
-        return (new Crawler($html))->filter('.item_block  .item_block_info .link_prod')->each($closure);
+            return $crawler->filter(' .item_block_info .link_prod')->each(static fn(Crawler $c) => $c->attr('href'));
+        });
+
+        $result = [];
+        foreach ($data as $item) {
+            if (count($item) > 0) {
+                $result[] = $item[0];
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -94,6 +107,7 @@ class Parser
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
      *
+     * @psalm-param list<string> $urls
      * @psalm-return list<string>
      */
     private function parseHtml(array $urls): array

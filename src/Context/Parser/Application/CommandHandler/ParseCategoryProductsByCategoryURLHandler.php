@@ -46,6 +46,7 @@ class ParseCategoryProductsByCategoryURLHandler implements Base
 
     /**
      * @param ParseCategoryProductsByCategoryURL $command
+     * @return void
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
