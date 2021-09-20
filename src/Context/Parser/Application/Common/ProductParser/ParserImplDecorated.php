@@ -73,6 +73,15 @@ class ParserImplDecorated implements Parser
         $crawler->filter('br:nth-of-type(2n)')->each($closureBr);
         /** Конец */
 
+        /** Удаление блока `attention` */
+        $closureAttention = static function (Crawler $c): void {
+            foreach ($c as $child) {
+                $child->parentNode->removeChild($child);
+            }
+        };
+        $crawler->filter('div.attention')->each($closureAttention);
+        /** Конец */
+
         $product->setDescription($crawler->html());
     }
 
