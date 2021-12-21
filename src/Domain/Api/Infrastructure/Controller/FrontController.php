@@ -5,12 +5,12 @@ namespace App\Domain\Api\Infrastructure\Controller;
 use Throwable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Domain\Common\Domain\Arguments\Arguments;
 use App\Domain\Api\Application\Command\StartProcess;
 use App\Domain\Common\Application\QueryBus\QueryBus;
 use App\Domain\Api\Application\Command\ResetProcess;
 use App\Domain\Api\Application\Query\GetProcessState;
 use App\Domain\Common\Domain\Response\JSONRPCResponse;
+use App\Domain\Common\Domain\ArgumentList\ArgumentList;
 use App\Domain\Common\Application\CommandBus\CommandBus;
 use App\Domain\Common\Infrastructure\Controller\JSONRPCController;
 
@@ -64,14 +64,14 @@ class FrontController extends JSONRPCController
     }
 
     /**
-     * @param Arguments $arguments
+     * @param ArgumentList $arguments
      * @return JSONRPCResponse
      */
-    public function startProcess(Arguments $arguments): JSONRPCResponse
+    public function startProcess(ArgumentList $arguments): JSONRPCResponse
     {
         $userId = $this->getUserId($arguments->getRequest());
 
-        $params = $arguments->getParams();
+        $params = $arguments->getParamList();
         $command = new StartProcess(
             $userId,
             $params[0],
@@ -89,10 +89,10 @@ class FrontController extends JSONRPCController
     }
 
     /**
-     * @param Arguments $arguments
+     * @param ArgumentList $arguments
      * @return JSONRPCResponse
      */
-    public function getProcessState(Arguments $arguments): JSONRPCResponse
+    public function getProcessState(ArgumentList $arguments): JSONRPCResponse
     {
         $userId = $this->getUserId($arguments->getRequest());
 

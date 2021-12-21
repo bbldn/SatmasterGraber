@@ -1,29 +1,29 @@
 <?php
 
-namespace App\Domain\Common\Domain\Arguments;
+namespace App\Domain\Common\Domain\ArgumentList;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class Arguments
+class ArgumentList
 {
-    private ?array $params;
+    private ?array $paramList;
 
     private Request $request;
 
     private $id;
 
     /**
-     * @param array|null $params
+     * @param array|null $paramList
      * @param Request $request
      * @param null $id
      */
     public function __construct(
-        ?array $params,
+        ?array $paramList,
         Request $request,
         $id = null
     )
     {
-        $this->params = $params;
+        $this->paramList = $paramList;
         $this->request = $request;
         $this->id = $id;
     }
@@ -31,9 +31,9 @@ class Arguments
     /**
      * @return array|null
      */
-    public function getParams(): ?array
+    public function getParamList(): ?array
     {
-        return $this->params;
+        return $this->paramList;
     }
 
     /**
