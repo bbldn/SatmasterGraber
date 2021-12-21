@@ -8,12 +8,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\Domain\Common\Application\CommandBus\CommandBus;
-use App\Domain\Parser\Application\Command\DownloadProductPictureListByCategoryURL;
+use App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURL;
 
-class DownloadProductsPicturesByCategoryURLCommand extends Command
+class ParseProductListByCategoryURLCommand extends Command
 {
     /** @var string */
-    protected static $defaultName = 'project:download:products:pictures:by:category:url';
+    protected static $defaultName = 'project:parse:products:by:category:url';
 
     private CommandBus $commandBus;
 
@@ -51,7 +51,7 @@ class DownloadProductsPicturesByCategoryURLCommand extends Command
             $progressBar->advance();
         };
 
-        $command = new DownloadProductPictureListByCategoryURL(
+        $command = new ParseCategoryProductListByCategoryURL(
             $input->getArgument('url'),
             $onInit,
             $onStep

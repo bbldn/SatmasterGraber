@@ -11,10 +11,10 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Domain\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
-use App\Domain\Parser\Application\Command\DownloadProductPictureListByCategoryURL;
-use App\Domain\Parser\Application\Command\DownloadProductPictureListByCategoryURLHandler as Base;
+use App\Domain\Parser\Application\Command\DownloadProductListPictureListByCategoryURL;
+use App\Domain\Parser\Application\Command\DownloadProductListPictureListByCategoryURLHandler as Base;
 
-class DownloadProductPictureListByCategoryURLHandler implements Base
+class DownloadProductListPictureListByCategoryURLHandler implements Base
 {
     private Kernel $kernel;
 
@@ -44,14 +44,14 @@ class DownloadProductPictureListByCategoryURLHandler implements Base
     }
 
     /**
-     * @param DownloadProductPictureListByCategoryURL $command
+     * @param DownloadProductListPictureListByCategoryURL $command
      * @return void
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
      */
-    public function __invoke(DownloadProductPictureListByCategoryURL $command): void
+    public function __invoke(DownloadProductListPictureListByCategoryURL $command): void
     {
         $onInit = $command->getOnInit();
         $onStep = $command->getOnStep();
