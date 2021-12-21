@@ -9,13 +9,13 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\ArgumentList;
-use App\Domain\Parser\Application\Command\ParseCategoryProductsByCategoryURL;
+use App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURL;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Domain\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
-use App\Domain\Parser\Application\Command\ParseCategoryProductsByCategoryURLHandler as Base;
+use App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURLHandler as Base;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Generator as ProductToSQLGenerator;
 
-class ParseCategoryProductsByCategoryURLHandler implements Base
+class ParseCategoryProductListByCategoryURLHandler implements Base
 {
     private Kernel $kernel;
 
@@ -45,14 +45,14 @@ class ParseCategoryProductsByCategoryURLHandler implements Base
     }
 
     /**
-     * @param ParseCategoryProductsByCategoryURL $command
+     * @param ParseCategoryProductListByCategoryURL $command
      * @return void
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
      */
-    public function __invoke(ParseCategoryProductsByCategoryURL $command): void
+    public function __invoke(ParseCategoryProductListByCategoryURL $command): void
     {
         $fileName = "{$this->kernel->getProjectDir()}/var/dumps/dump.sql";
         if (true === file_exists($fileName)) {

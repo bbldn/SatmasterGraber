@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\Domain\Common\Application\CommandBus\CommandBus;
-use App\Domain\Parser\Application\Command\ParseCategoryProductsByCategoryURL;
+use App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURL;
 
 class ParseProductsByCategoryURLCommand extends Command
 {
@@ -51,7 +51,7 @@ class ParseProductsByCategoryURLCommand extends Command
             $progressBar->advance();
         };
 
-        $command = new ParseCategoryProductsByCategoryURL(
+        $command = new ParseCategoryProductListByCategoryURL(
             $input->getArgument('url'),
             $onInit,
             $onStep
