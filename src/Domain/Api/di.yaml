@@ -1,0 +1,20 @@
+services:
+    #Queries
+    App\Domain\Api\Application\Query\GetProcessStateHandler:
+        public: true
+        autowire: true
+        class: App\Domain\Api\Application\QueryHandler\GetProcessStateHandler
+
+    #Commands
+    App\Domain\Api\Application\Command\StartProcessHandler:
+        public: true
+        autowire: true
+        class: App\Domain\Api\Application\CommandHandler\StartProcessHandler
+    App\Domain\Api\Application\Command\ResetProcessHandler:
+        public: true
+        autowire: true
+        class: App\Domain\Api\Application\CommandHandler\ResetProcessHandler
+    App\Domain\Api\Application\Command\GenerateArchiveHandler:
+        public: true
+        autowire: true
+        class: App\Domain\Api\Application\CommandHandler\GenerateArchiveHandler

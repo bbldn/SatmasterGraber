@@ -1,0 +1,19 @@
+services:
+    #Services
+    App\Domain\Parser\Application\Common\ProductParser\Parser:
+        autowire: true
+        class: App\Domain\Parser\Application\Common\ProductParser\ParserImplDecorated
+
+    #Commands
+    App\Domain\Parser\Application\Command\ParseProductByURLHandler:
+        public: true
+        autowire: true
+        class: App\Domain\Parser\Application\CommandHandler\ParseProductByURLHandler
+    App\Domain\Parser\Application\Command\ParseCategoryProductsByCategoryURLHandler:
+        public: true
+        autowire: true
+        class: App\Domain\Parser\Application\CommandHandler\ParseCategoryProductsByCategoryURLHandler
+    App\Domain\Parser\Application\Command\DownloadProductsPicturesByCategoryURLHandler:
+        public: true
+        autowire: true
+        class: App\Domain\Parser\Application\CommandHandler\DownloadProductsPicturesByCategoryURLHandler
