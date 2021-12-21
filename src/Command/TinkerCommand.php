@@ -8,7 +8,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TinkerCommand extends Command
 {
-    /** @var string */
     protected static $defaultName = 'tinker';
 
     public function __construct()
