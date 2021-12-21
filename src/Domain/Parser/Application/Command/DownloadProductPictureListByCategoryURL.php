@@ -4,7 +4,7 @@ namespace App\Domain\Parser\Application\Command;
 
 use App\Domain\Common\Application\CommandBus\Command;
 
-class DownloadProductsPicturesByCategoryURL implements Command
+class DownloadProductPictureListByCategoryURL implements Command
 {
     private string $url;
 

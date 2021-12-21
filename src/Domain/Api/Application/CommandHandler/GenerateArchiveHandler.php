@@ -20,7 +20,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use App\Domain\Api\Application\Command\GenerateArchiveHandler as Base;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Arguments;
+use App\Domain\Parser\Application\Common\ProductToSQLGenerator\ArgumentList;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Domain\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Generator as ProductToSQLGenerator;
@@ -151,7 +151,7 @@ class GenerateArchiveHandler implements Base
         foreach ($productsUrls as $index => $productUrl) {
             $product = $this->productParser->parse(new URL($productUrl));
 
-            $arguments = new Arguments($product);
+            $arguments = new ArgumentList($product);
             $arguments->setImagePath($command->getDestinationImagesPath());
             $arguments->setCategoryId($command->getDestinationCategoryId());
 

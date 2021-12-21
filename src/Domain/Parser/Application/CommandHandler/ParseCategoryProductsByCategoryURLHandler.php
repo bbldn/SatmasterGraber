@@ -7,8 +7,8 @@ use Symfony\Component\HttpKernel\KernelInterface as Kernel;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Arguments;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use App\Domain\Parser\Application\Common\ProductToSQLGenerator\ArgumentList;
 use App\Domain\Parser\Application\Command\ParseCategoryProductsByCategoryURL;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Domain\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
@@ -62,23 +62,23 @@ class ParseCategoryProductsByCategoryURLHandler implements Base
 
         $onInit = $command->getOnInit();
         $onStep = $command->getOnStep();
-        $urls = $this->categoryParser->parse(new URL($command->getUrl()));
+        $urlList = $this->categoryParser->parse(new URL($command->getUrl()));
         if (null !== $onInit) {
-            $onInit(count($urls));
+            call_user_func($onInit, count($urlList));
         }
 
         file_put_contents($fileName, $this->productToSQLGenerator->sqlStartTransaction(), FILE_APPEND);
 
-        foreach ($urls as $url) {
+        foreach ($urlList as $url) {
             $product = $this->productParser->parse(new URL($url));
-            $arguments = new Arguments($product);
+            $arguments = new ArgumentList($product);
             $arguments->setCategoryId(62);
             $arguments->setImagePath('catalog/prod/graber/');
             $row = $this->productToSQLGenerator->generate($arguments);
             file_put_contents($fileName, $row, FILE_APPEND);
 
             if (null !== $onStep) {
-                $onStep();
+                call_user_func($onStep);
             }
         }
 

@@ -4,7 +4,7 @@ namespace App\Domain\Parser\Application\Common\ProductToSQLGenerator;
 
 use App\Domain\Parser\Domain\DTO\Product;
 
-class Arguments
+class ArgumentList
 {
     private ?int $categoryId = null;
 
@@ -30,7 +30,7 @@ class Arguments
 
     /**
      * @param int|null $categoryId
-     * @return Arguments
+     * @return ArgumentList
      */
     public function setCategoryId(?int $categoryId): self
     {
@@ -49,7 +49,7 @@ class Arguments
 
     /**
      * @param string|null $imagePath
-     * @return Arguments
+     * @return ArgumentList
      */
     public function setImagePath(?string $imagePath): self
     {
@@ -68,7 +68,7 @@ class Arguments
 
     /**
      * @param Product $product
-     * @return Arguments
+     * @return ArgumentList
      */
     public function setProduct(Product $product): self
     {

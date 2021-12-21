@@ -237,7 +237,7 @@ class Generator
      *
      * @psalm-return list<string>
      */
-    private function sqlAttributes(Product $product): array
+    private function sqlAttributeList(Product $product): array
     {
         $attributes = $product->getAttributes() ?? [];
 
@@ -253,10 +253,10 @@ class Generator
     }
 
     /**
-     * @param Arguments $arguments
+     * @param ArgumentList $arguments
      * @return string
      */
-    public function generate(Arguments $arguments): string
+    public function generate(ArgumentList $arguments): string
     {
         $path = $arguments->getImagePath();
         $product = $arguments->getProduct();
@@ -266,7 +266,7 @@ class Generator
             $this->sqlProduct($product, $path),
             $this->sqlProductDescription($product),
             $this->sqlProductStore(),
-            ...$this->sqlAttributes($product),
+            ...$this->sqlAttributeList($product),
         ];
 
         $categoryId = $arguments->getCategoryId();

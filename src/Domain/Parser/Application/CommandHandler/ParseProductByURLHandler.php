@@ -9,7 +9,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Arguments;
+use App\Domain\Parser\Application\Common\ProductToSQLGenerator\ArgumentList;
 use App\Domain\Parser\Application\Command\ParseProductByURLHandler as Base;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Generator as ProductToSQLGenerator;
@@ -51,7 +51,7 @@ class ParseProductByURLHandler implements Base
         $fileName = "{$this->kernel->getProjectDir()}/var/dumps/dump.sql";
 
         $product = $this->productParser->parse(new URL($command->getUrl()));
-        $arguments = new Arguments($product);
+        $arguments = new ArgumentList($product);
         $arguments->setCategoryId(62);
         $arguments->setImagePath('catalog/prod/graber/');
         $row = $this->productToSQLGenerator->generate($arguments);

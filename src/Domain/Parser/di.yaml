@@ -13,7 +13,7 @@ services:
         public: true
         autowire: true
         class: App\Domain\Parser\Application\CommandHandler\ParseCategoryProductsByCategoryURLHandler
-    App\Domain\Parser\Application\Command\DownloadProductsPicturesByCategoryURLHandler:
+    App\Domain\Parser\Application\Command\DownloadProductPictureListByCategoryURLHandler:
         public: true
         autowire: true
-        class: App\Domain\Parser\Application\CommandHandler\DownloadProductsPicturesByCategoryURLHandler
+        class: App\Domain\Parser\Application\CommandHandler\DownloadProductPictureListByCategoryURLHandler

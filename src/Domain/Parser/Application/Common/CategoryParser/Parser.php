@@ -79,7 +79,7 @@ class Parser
      *
      * @psalm-return list<string>
      */
-    private function parseProductsUrls(string $html): array
+    private function parseProductUrlList(string $html): array
     {
         $data = (new Crawler($html))->filter('.item_block')->each(static function(Crawler $crawler): array {
             if ('item_block notavailable' === $crawler->attr('class')) {
@@ -100,25 +100,25 @@ class Parser
     }
 
     /**
-     * @param string[] $urls
+     * @param string[] $urlList
      * @return string[]
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
      *
-     * @psalm-param list<string> $urls
+     * @psalm-param list<string> $urlList
      * @psalm-return list<string>
      */
-    private function parseHtml(array $urls): array
+    private function parseHtml(array $urlList): array
     {
         $result = [];
-        foreach ($urls as $url) {
+        foreach ($urlList as $url) {
             $content = $this->getContent($url);
 
             $result = [
                 ...$result,
-                ...$this->parseProductsUrls($content),
+                ...$this->parseProductUrlList($content),
             ];
         }
 

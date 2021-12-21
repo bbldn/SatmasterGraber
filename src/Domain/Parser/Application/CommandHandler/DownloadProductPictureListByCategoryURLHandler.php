@@ -10,11 +10,11 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
-use App\Domain\Parser\Application\Command\DownloadProductsPicturesByCategoryURL;
 use App\Domain\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
-use App\Domain\Parser\Application\Command\DownloadProductsPicturesByCategoryURLHandler as Base;
+use App\Domain\Parser\Application\Command\DownloadProductPictureListByCategoryURL;
+use App\Domain\Parser\Application\Command\DownloadProductPictureListByCategoryURLHandler as Base;
 
-class DownloadProductsPicturesByCategoryURLHandler implements Base
+class DownloadProductPictureListByCategoryURLHandler implements Base
 {
     private Kernel $kernel;
 
@@ -44,27 +44,27 @@ class DownloadProductsPicturesByCategoryURLHandler implements Base
     }
 
     /**
-     * @param DownloadProductsPicturesByCategoryURL $command
+     * @param DownloadProductPictureListByCategoryURL $command
      * @return void
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws RedirectionExceptionInterface
      */
-    public function __invoke(DownloadProductsPicturesByCategoryURL $command): void
+    public function __invoke(DownloadProductPictureListByCategoryURL $command): void
     {
         $onInit = $command->getOnInit();
         $onStep = $command->getOnStep();
-        $urls = $this->categoryParser->parse(new URL($command->getUrl()));
+        $urlList = $this->categoryParser->parse(new URL($command->getUrl()));
         if (null !== $onInit) {
-            $onInit(count($urls));
+            call_user_func($onInit, count($urlList));
         }
 
-        foreach ($urls as $url) {
+        foreach ($urlList as $url) {
             $product = $this->productParser->parse(new URL($url));
 
-            $images = $product->getImages() ?? [];
-            foreach ($images as $image) {
+            $imageList = $product->getImages() ?? [];
+            foreach ($imageList as $image) {
                 $array = pathinfo($image);
 
                 $url = "https://satmaster.kiev.ua$image";
@@ -74,7 +74,7 @@ class DownloadProductsPicturesByCategoryURLHandler implements Base
             }
 
             if (null !== $onStep) {
-                $onStep();
+                call_user_func($onStep);
             }
         }
     }

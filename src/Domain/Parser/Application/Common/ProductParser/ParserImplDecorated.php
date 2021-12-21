@@ -3,6 +3,7 @@
 namespace App\Domain\Parser\Application\Common\ProductParser;
 
 use DOMDocument;
+use DOMException;
 use Symfony\Component\DomCrawler\Crawler;
 use App\Domain\Parser\Domain\DTO\Product;
 use App\Domain\Parser\Domain\ValueObject\URL;
@@ -32,6 +33,7 @@ class ParserImplDecorated implements Parser
     /**
      * @param Product $product
      * @return void
+     * @throws DOMException
      */
     private function change(Product $product): void
     {
@@ -88,6 +90,7 @@ class ParserImplDecorated implements Parser
     /**
      * @param URL $url
      * @return Product
+     * @throws DOMException
      * @throws ClientExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface

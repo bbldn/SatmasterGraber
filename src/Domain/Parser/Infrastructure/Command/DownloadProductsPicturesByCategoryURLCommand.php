@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\Domain\Common\Application\CommandBus\CommandBus;
-use App\Domain\Parser\Application\Command\DownloadProductsPicturesByCategoryURL;
+use App\Domain\Parser\Application\Command\DownloadProductPictureListByCategoryURL;
 
 class DownloadProductsPicturesByCategoryURLCommand extends Command
 {
@@ -51,7 +51,7 @@ class DownloadProductsPicturesByCategoryURLCommand extends Command
             $progressBar->advance();
         };
 
-        $command = new DownloadProductsPicturesByCategoryURL(
+        $command = new DownloadProductPictureListByCategoryURL(
             $input->getArgument('url'),
             $onInit,
             $onStep

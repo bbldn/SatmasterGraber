@@ -99,7 +99,7 @@ class ParserImpl implements Parser
      *
      * @psalm-return list<string>
      */
-    private function parseImages(Crawler $crawler): array
+    private function parseImageList(Crawler $crawler): array
     {
         $closure = static fn(Crawler $c): string => $c->attr('href');
 
@@ -127,7 +127,7 @@ class ParserImpl implements Parser
      *
      * @psalm-return Attribute
      */
-    private function parseAttributes(Crawler $crawler, Product $product): array
+    private function parseAttributeList(Crawler $crawler, Product $product): array
     {
         $attributes = $this->attributesParser->parse($crawler);
         foreach ($attributes as $attribute) {
@@ -158,8 +158,8 @@ class ParserImpl implements Parser
         $result->setId($this->parseId($crawler));
         $result->setName($this->parseName($crawler));
         $result->setPrice($this->parsePrice($crawler));
-        $result->setImages($this->parseImages($crawler));
-        $result->setAttributes($this->parseAttributes($crawler, $result));
+        $result->setImages($this->parseImageList($crawler));
+        $result->setAttributes($this->parseAttributeList($crawler, $result));
 
         return $result;
     }
