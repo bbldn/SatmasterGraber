@@ -14,37 +14,37 @@ services:
             - '../src/Tests/'
 
     #Services
-    App\Context\Parser\Application\Common\ProductParser\Parser:
-        class: App\Context\Parser\Application\Common\ProductParser\ParserImplDecorated
+    App\Domain\Parser\Application\Common\ProductParser\Parser:
+        class: App\Domain\Parser\Application\Common\ProductParser\ParserImplDecorated
 
     #Queries
-    App\Context\Api\Application\Query\GetProcessStateHandler:
+    App\Domain\Api\Application\Query\GetProcessStateHandler:
         public: true
         autowire: true
-        class: App\Context\Api\Application\QueryHandler\GetProcessStateHandler
+        class: App\Domain\Api\Application\QueryHandler\GetProcessStateHandler
 
     #Commands
-    App\Context\Api\Application\Command\StartProcessHandler:
+    App\Domain\Api\Application\Command\StartProcessHandler:
         public: true
         autowire: true
-        class: App\Context\Api\Application\CommandHandler\StartProcessHandler
-    App\Context\Api\Application\Command\ResetProcessHandler:
+        class: App\Domain\Api\Application\CommandHandler\StartProcessHandler
+    App\Domain\Api\Application\Command\ResetProcessHandler:
         public: true
         autowire: true
-        class: App\Context\Api\Application\CommandHandler\ResetProcessHandler
-    App\Context\Api\Application\Command\GenerateArchiveHandler:
+        class: App\Domain\Api\Application\CommandHandler\ResetProcessHandler
+    App\Domain\Api\Application\Command\GenerateArchiveHandler:
         public: true
         autowire: true
-        class: App\Context\Api\Application\CommandHandler\GenerateArchiveHandler
-    App\Context\Parser\Application\Command\ParseProductByURLHandler:
+        class: App\Domain\Api\Application\CommandHandler\GenerateArchiveHandler
+    App\Domain\Parser\Application\Command\ParseProductByURLHandler:
         public: true
         autowire: true
-        class: App\Context\Parser\Application\CommandHandler\ParseProductByURLHandler
-    App\Context\Parser\Application\Command\ParseCategoryProductsByCategoryURLHandler:
+        class: App\Domain\Parser\Application\CommandHandler\ParseProductByURLHandler
+    App\Domain\Parser\Application\Command\ParseCategoryProductsByCategoryURLHandler:
         public: true
         autowire: true
-        class: App\Context\Parser\Application\CommandHandler\ParseCategoryProductsByCategoryURLHandler
-    App\Context\Parser\Application\Command\DownloadProductsPicturesByCategoryURLHandler:
+        class: App\Domain\Parser\Application\CommandHandler\ParseCategoryProductsByCategoryURLHandler
+    App\Domain\Parser\Application\Command\DownloadProductsPicturesByCategoryURLHandler:
         public: true
         autowire: true
-        class: App\Context\Parser\Application\CommandHandler\DownloadProductsPicturesByCategoryURLHandler
+        class: App\Domain\Parser\Application\CommandHandler\DownloadProductsPicturesByCategoryURLHandler

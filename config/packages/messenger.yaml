@@ -12,4 +12,4 @@ framework:
             failed_graber: '%env(GRABER_FAILED_MESSENGER_TRANSPORT_DSN)%'
 
         routing:
-            App\Context\Api\Domain\Message\GenerateArchive: graber
+            App\Domain\Api\Domain\Message\GenerateArchive: graber
