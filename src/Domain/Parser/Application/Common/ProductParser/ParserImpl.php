@@ -5,50 +5,34 @@ namespace App\Domain\Parser\Application\Common\ProductParser;
 use Symfony\Component\DomCrawler\Crawler;
 use App\Domain\Parser\Domain\DTO\Product;
 use App\Domain\Parser\Domain\DTO\Attribute;
-use App\Domain\Parser\Domain\ValueObject\URL;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use App\Domain\Parser\Domain\Exception\ParseException;
 use App\Domain\Parser\Application\Common\ProductParser\AttributesParser\Parser as AttributesParser;
 
 class ParserImpl implements Parser
 {
-    private HttpClient $httpClient;
-
     private AttributesParser $attributesParser;
 
     /**
-     * @param HttpClient $httpClient
      * @param AttributesParser $attributesParser
      */
-    public function __construct(
-        HttpClient $httpClient,
-        AttributesParser $attributesParser
-    )
+    public function __construct(AttributesParser $attributesParser)
     {
-        $this->httpClient = $httpClient;
         $this->attributesParser = $attributesParser;
     }
 
     /**
      * @param string $url
-     * @return string|null
-     * @throws ClientExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws RedirectionExceptionInterface
+     * @return string
+     * @throws ParseException
      */
-    private function getContent(string $url): ?string
+    private function getContent(string $url): string
     {
-        $response = $this->httpClient->request('GET', $url);
-        if (Response::HTTP_OK !== $response->getStatusCode()) {
-            return null;
+        $html = @file_get_contents("https://am-parts.ru$url");
+        if (false === $html) {
+            throw new ParseException('Error');
         }
 
-        return $response->getContent(false);
+        return $html;
     }
 
     /**
@@ -125,29 +109,26 @@ class ParserImpl implements Parser
      * @param Product $product
      * @return Attribute[]
      *
-     * @psalm-return Attribute
+     * @psalm-return list<Attribute>
      */
     private function parseAttributeList(Crawler $crawler, Product $product): array
     {
-        $attributes = $this->attributesParser->parse($crawler);
-        foreach ($attributes as $attribute) {
+        $attributeList = $this->attributesParser->parse($crawler);
+        foreach ($attributeList as $attribute) {
             $attribute->setProduct($product);
         }
 
-        return $attributes;
+        return $attributeList;
     }
 
     /**
-     * @param URL $url
+     * @param string $url
      * @return Product
-     * @throws ClientExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws RedirectionExceptionInterface
+     * @throws ParseException
      */
-    public function parse(URL $url): Product
+    public function parse(string $url): Product
     {
-        $html = $this->getContent($url->getUrl());
+        $html = $this->getContent($url);
 
         $crawler = new Crawler($html);
 

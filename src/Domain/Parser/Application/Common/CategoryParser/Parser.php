@@ -3,60 +3,35 @@
 namespace App\Domain\Parser\Application\Common\CategoryParser;
 
 use Symfony\Component\DomCrawler\Crawler;
-use App\Domain\Parser\Domain\ValueObject\URL;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use App\Domain\Parser\Domain\Exception\ParseException;
 
 class Parser
 {
-    private HttpClient $httpClient;
-
-    /**
-     * @param HttpClient $httpClient
-     */
-    public function __construct(HttpClient $httpClient)
-    {
-        $this->httpClient = $httpClient;
-    }
-
     /**
      * @param string $url
-     * @return string|null
-     * @throws ClientExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws RedirectionExceptionInterface
+     * @return string
+     * @throws ParseException
      */
-    private function getContent(string $url): ?string
+    private function getContent(string $url): string
     {
-        $response = $this->httpClient->request('GET', $url);
-        if (Response::HTTP_OK !== $response->getStatusCode()) {
-            return null;
+        $html = @file_get_contents("https://am-parts.ru$url");
+        if (false === $html) {
+            throw new ParseException('Error');
         }
 
-        return $response->getContent(false);
+        return $html;
     }
 
     /**
      * @param string $url
      * @return string[]
-     * @throws ClientExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws RedirectionExceptionInterface
+     * @throws ParseException
      *
      * @psalm-return list<string>
      */
     private function parsePagination(string $url): array
     {
         $html = $this->getContent($url);
-        if (null === $html) {
-            return [];
-        }
 
         $closure = static fn(Crawler $c) => $c->attr('href');
         $data = (new Crawler($html))->filter('nav.page_nav a.addable')->each($closure);
@@ -81,7 +56,7 @@ class Parser
      */
     private function parseProductUrlList(string $html): array
     {
-        $data = (new Crawler($html))->filter('.item_block')->each(static function(Crawler $crawler): array {
+        $itemList = (new Crawler($html))->filter('.item_block')->each(static function(Crawler $crawler): array {
             if ('item_block notavailable' === $crawler->attr('class')) {
                 return [];
             }
@@ -90,7 +65,7 @@ class Parser
         });
 
         $result = [];
-        foreach ($data as $item) {
+        foreach ($itemList as $item) {
             if (count($item) > 0) {
                 $result[] = $item[0];
             }
@@ -102,10 +77,7 @@ class Parser
     /**
      * @param string[] $urlList
      * @return string[]
-     * @throws ClientExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws RedirectionExceptionInterface
+     * @throws ParseException
      *
      * @psalm-param list<string> $urlList
      * @psalm-return list<string>
@@ -126,18 +98,15 @@ class Parser
     }
 
     /**
-     * @param URL $url
+     * @param string $url
      * @return string[]
-     * @throws ServerExceptionInterface
-     * @throws ClientExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws RedirectionExceptionInterface
+     * @throws ParseException
      *
      * @psalm-return list<string>
      */
-    public function parse(URL $url): array
+    public function parse(string $url): array
     {
-        $urls = $this->parsePagination($url->getUrl());
+        $urls = $this->parsePagination($url);
 
         return $this->parseHtml($urls);
     }

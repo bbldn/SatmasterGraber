@@ -2,12 +2,12 @@
 
 namespace App\Domain\Parser\Infrastructure\Command;
 
+use BBLDN\CQRS\CommandBus\CommandBus;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Domain\Common\Application\CommandBus\CommandBus;
 use App\Domain\Parser\Application\Command\DownloadProductListPictureListByCategoryURL;
 
 class DownloadProductListPictureListByCategoryURLCommand extends Command
@@ -43,19 +43,14 @@ class DownloadProductListPictureListByCategoryURLCommand extends Command
     {
         $progressBar = new ProgressBar($output);
 
-        $onInit = static function(int $number) use($progressBar): void {
-            $progressBar->setMaxSteps($number);
-        };
+        $command = new DownloadProductListPictureListByCategoryURL($input->getArgument('url'));
 
-        $onStep = static function() use($progressBar): void {
-            $progressBar->advance();
-        };
+        /** @psalm-suppress MissingClosureReturnType */
+        $command->setOnStep(static fn() => $progressBar->advance());
 
-        $command = new DownloadProductListPictureListByCategoryURL(
-            $input->getArgument('url'),
-            $onInit,
-            $onStep
-        );
+        /** @psalm-suppress MissingClosureReturnType */
+        $command->setOnInit(static fn(int $max) => $progressBar->setMaxSteps($max));
+
         $this->commandBus->execute($command);
 
         $output->write(PHP_EOL);

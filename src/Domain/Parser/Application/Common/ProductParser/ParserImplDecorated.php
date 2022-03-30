@@ -6,12 +6,7 @@ use DOMDocument;
 use DOMException;
 use Symfony\Component\DomCrawler\Crawler;
 use App\Domain\Parser\Domain\DTO\Product;
-use App\Domain\Parser\Domain\ValueObject\URL;
-use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use App\Domain\Parser\Domain\Exception\ParseException;
 use App\Domain\Parser\Application\Common\ProductParser\AttributesParser\Parser as AttributesParser;
 
 class ParserImplDecorated implements Parser
@@ -19,15 +14,11 @@ class ParserImplDecorated implements Parser
     private ParserImpl $parserImpl;
 
     /**
-     * @param HttpClient $httpClient
      * @param AttributesParser $attributesParser
      */
-    public function __construct(
-        HttpClient $httpClient,
-        AttributesParser $attributesParser
-    )
+    public function __construct(AttributesParser $attributesParser)
     {
-        $this->parserImpl = new ParserImpl($httpClient, $attributesParser);
+        $this->parserImpl = new ParserImpl($attributesParser);
     }
 
     /**
@@ -50,8 +41,14 @@ class ParserImplDecorated implements Parser
         /** Удаление ссылок */
         $closureA = static function (Crawler $c) use ($doc): void {
             foreach ($c as $child) {
-                $node = $doc->createElement('p', $child->nodeValue);
-                $child->parentNode->replaceChild($node, $child);
+                $nodeValue = $child->nodeValue;
+                if (null !== $nodeValue) {
+                    $node = $doc->createElement('p', $nodeValue);
+                    $parentNode = $child->parentNode;
+                    if (null !== $parentNode) {
+                        $parentNode->replaceChild($node, $child);
+                    }
+                }
             }
         };
         $crawler->filter('a')->each($closureA);
@@ -60,7 +57,10 @@ class ParserImplDecorated implements Parser
         /** Удаление картинок из описания */
         $closureImg = static function (Crawler $c): void {
             foreach ($c as $child) {
-                $child->parentNode->removeChild($child);
+                $parentNode = $child->parentNode;
+                if (null !== $parentNode) {
+                    $parentNode->removeChild($child);
+                }
             }
         };
         $crawler->filter('img')->each($closureImg);
@@ -69,7 +69,10 @@ class ParserImplDecorated implements Parser
         /** Удаление пустых строк */
         $closureBr = static function (Crawler $c): void {
             foreach ($c as $child) {
-                $child->parentNode->removeChild($child);
+                $parentNode = $child->parentNode;
+                if (null !== $parentNode) {
+                    $parentNode->removeChild($child);
+                }
             }
         };
         $crawler->filter('br:nth-of-type(2n)')->each($closureBr);
@@ -78,7 +81,10 @@ class ParserImplDecorated implements Parser
         /** Удаление блока `attention` */
         $closureAttention = static function (Crawler $c): void {
             foreach ($c as $child) {
-                $child->parentNode->removeChild($child);
+                $parentNode = $child->parentNode;
+                if (null !== $parentNode) {
+                    $parentNode->removeChild($child);
+                }
             }
         };
         $crawler->filter('div.attention')->each($closureAttention);
@@ -88,15 +94,12 @@ class ParserImplDecorated implements Parser
     }
 
     /**
-     * @param URL $url
+     * @param string $url
      * @return Product
      * @throws DOMException
-     * @throws ClientExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws RedirectionExceptionInterface
+     * @throws ParseException
      */
-    public function parse(URL $url): Product
+    public function parse(string $url): Product
     {
         $product = $this->parserImpl->parse($url);
         $this->change($product);

@@ -3,17 +3,3 @@ services:
     App\Domain\Parser\Application\Common\ProductParser\Parser:
         autowire: true
         class: App\Domain\Parser\Application\Common\ProductParser\ParserImplDecorated
-
-    #Commands
-    App\Domain\Parser\Application\Command\ParseProductByURLHandler:
-        public: true
-        autowire: true
-        class: App\Domain\Parser\Application\CommandHandler\ParseProductByURLHandler
-    App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURLHandler:
-        public: true
-        autowire: true
-        class: App\Domain\Parser\Application\CommandHandler\ParseCategoryProductListByCategoryURLHandler
-    App\Domain\Parser\Application\Command\DownloadProductListPictureListByCategoryURLHandler:
-        public: true
-        autowire: true
-        class: App\Domain\Parser\Application\CommandHandler\DownloadProductListPictureListByCategoryURLHandler

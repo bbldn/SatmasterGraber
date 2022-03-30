@@ -11,7 +11,7 @@ class Parser
      * @param Crawler $crawler
      * @return Attribute[]
      *
-     * @psalm-return Attribute
+     * @psalm-return list<Attribute>
      */
     public function parse(Crawler $crawler): array
     {

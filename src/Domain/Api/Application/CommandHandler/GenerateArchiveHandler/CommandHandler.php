@@ -9,11 +9,10 @@ use App\Domain\Api\Domain\State\Error;
 use App\Domain\Api\Domain\State\Finish;
 use App\Domain\Api\Domain\State\Process;
 use Symfony\Component\Filesystem\Filesystem;
-use App\Domain\Parser\Domain\ValueObject\URL;
 use App\Domain\Api\Domain\State\Initialization;
+use App\Domain\Parser\Domain\Exception\ParseException;
 use App\Domain\Api\Application\Command\GenerateArchive;
 use App\Domain\Api\Application\Common\State\File as StateFile;
-use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -29,8 +28,6 @@ class CommandHandler
 
     private Filesystem $filesystem;
 
-    private HttpClient $httpClient;
-
     private ProductParser $productParser;
 
     private CategoryParser $categoryParser;
@@ -40,7 +37,6 @@ class CommandHandler
     /**
      * @param Logger $logger
      * @param Filesystem $filesystem
-     * @param HttpClient $httpClient
      * @param ProductParser $productParser
      * @param CategoryParser $categoryParser
      * @param ProductToSQLGenerator $productToSQLGenerator
@@ -48,7 +44,6 @@ class CommandHandler
     public function __construct(
         Logger $logger,
         Filesystem $filesystem,
-        HttpClient $httpClient,
         ProductParser $productParser,
         CategoryParser $categoryParser,
         ProductToSQLGenerator $productToSQLGenerator
@@ -56,10 +51,24 @@ class CommandHandler
     {
         $this->logger = $logger;
         $this->filesystem = $filesystem;
-        $this->httpClient = $httpClient;
         $this->productParser = $productParser;
         $this->categoryParser = $categoryParser;
         $this->productToSQLGenerator = $productToSQLGenerator;
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     * @throws ParseException
+     */
+    private function getContent(string $url): string
+    {
+        $html = @file_get_contents("https://am-parts.ru$url");
+        if (false === $html) {
+            throw new ParseException('Error');
+        }
+
+        return $html;
     }
 
     /**
@@ -134,6 +143,7 @@ class CommandHandler
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws ParseException
      */
     private function invoke(GenerateArchive $command, StateFile $file): void
     {
@@ -141,13 +151,13 @@ class CommandHandler
 
         $this->createFolders($command);
         $file->whiteState(new Initialization('Получаем список товаров'));
-        $productsUrls = $this->categoryParser->parse(new URL($command->getSourceCategoryUrl()));
+        $productsUrls = $this->categoryParser->parse($command->getSourceCategoryUrl());
         $file->whiteState(new Initialization('Список товаров успешно получен'));
 
         $dumpsFileName = "/tmp/graber/{$command->getUserId()}/dumps/dumps.sql";
         file_put_contents($dumpsFileName, $this->productToSQLGenerator->sqlStartTransaction(), FILE_APPEND);
         foreach ($productsUrls as $index => $productUrl) {
-            $product = $this->productParser->parse(new URL($productUrl));
+            $product = $this->productParser->parse($productUrl);
 
             $arguments = new ArgumentList($product);
             $arguments->setImagePath($command->getDestinationImagesPath());
@@ -159,11 +169,9 @@ class CommandHandler
             $images = $product->getImages() ?? [];
             foreach ($images as $image) {
                 $array = pathinfo($image);
-
-                $url = "https://satmaster.kiev.ua$image";
-                $response = $this->httpClient->request('GET', $url);
+                $content = $this->getContent("https://satmaster.kiev.ua$image");
                 $fileName = "/tmp/graber/{$command->getUserId()}/images/{$array['basename']}";
-                file_put_contents($fileName, $response->getContent(false));
+                file_put_contents($fileName, $content);
             }
 
             $file->whiteState(new Process($calculatePercent($index + 1, count($productsUrls)), 'Обрабатываем товары'));

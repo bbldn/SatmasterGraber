@@ -1,21 +1,16 @@
 <?php
 
-namespace App\Domain\Parser\Application\CommandHandler;
+namespace App\Domain\Parser\Application\CommandHandler\ParseCategoryProductListByCategoryURLHandler;
 
-use App\Domain\Parser\Domain\ValueObject\URL;
+use App\Domain\Parser\Domain\Exception\ParseException;
 use Symfony\Component\HttpKernel\KernelInterface as Kernel;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\ArgumentList;
-use App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURL;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
+use App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURL;
 use App\Domain\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
-use App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURLHandler as Base;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Generator as ProductToSQLGenerator;
 
-class ParseCategoryProductListByCategoryURLHandler implements Base
+class CommandHandler
 {
     private Kernel $kernel;
 
@@ -47,10 +42,7 @@ class ParseCategoryProductListByCategoryURLHandler implements Base
     /**
      * @param ParseCategoryProductListByCategoryURL $command
      * @return void
-     * @throws ClientExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws RedirectionExceptionInterface
+     * @throws ParseException
      */
     public function __invoke(ParseCategoryProductListByCategoryURL $command): void
     {
@@ -62,7 +54,7 @@ class ParseCategoryProductListByCategoryURLHandler implements Base
 
         $onInit = $command->getOnInit();
         $onStep = $command->getOnStep();
-        $urlList = $this->categoryParser->parse(new URL($command->getUrl()));
+        $urlList = $this->categoryParser->parse($command->getUrl());
         if (null !== $onInit) {
             call_user_func($onInit, count($urlList));
         }
@@ -70,7 +62,7 @@ class ParseCategoryProductListByCategoryURLHandler implements Base
         file_put_contents($fileName, $this->productToSQLGenerator->sqlStartTransaction(), FILE_APPEND);
 
         foreach ($urlList as $url) {
-            $product = $this->productParser->parse(new URL($url));
+            $product = $this->productParser->parse($url);
             $arguments = new ArgumentList($product);
             $arguments->setCategoryId(62);
             $arguments->setImagePath('catalog/prod/graber/');
