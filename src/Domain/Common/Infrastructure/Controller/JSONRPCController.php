@@ -3,8 +3,8 @@
 namespace App\Domain\Common\Infrastructure\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use App\Domain\Common\Domain\ArgumentList\ArgumentList;
 use App\Domain\Common\Domain\Response\JSONRPCResponse;
+use App\Domain\Common\Domain\ArgumentList\ArgumentList;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 abstract class JSONRPCController extends AbstractController

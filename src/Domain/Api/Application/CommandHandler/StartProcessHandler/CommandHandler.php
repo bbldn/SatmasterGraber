@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Api\Application\CommandHandler;
+namespace App\Domain\Api\Application\CommandHandler\StartProcessHandler;
 
 use Exception;
 use App\Domain\Api\Domain\State\State;
@@ -10,9 +10,8 @@ use App\Domain\Api\Domain\Message\GenerateArchive;
 use App\Domain\Api\Application\Command\StartProcess;
 use App\Domain\Api\Application\Common\State\File as StateFile;
 use Symfony\Component\Messenger\MessageBusInterface as MessageBus;
-use App\Domain\Api\Application\Command\StartProcessHandler as Base;
 
-class StartProcessHandler implements Base
+class CommandHandler
 {
     private MessageBus $messageBus;
 

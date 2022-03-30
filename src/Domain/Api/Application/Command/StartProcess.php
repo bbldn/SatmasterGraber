@@ -2,8 +2,13 @@
 
 namespace App\Domain\Api\Application\Command;
 
-use App\Domain\Common\Application\CommandBus\Command;
+use BBLDN\CQRS\CommandBus\Command;
+use BBLDN\CQRS\CommandBus\Annotation as CQRS;
+use App\Domain\Api\Application\CommandHandler\StartProcessHandler\CommandHandler;
 
+/**
+ * @CQRS\CommandHandler(class=CommandHandler::class)
+ */
 class StartProcess implements Command
 {
     private string $userId;

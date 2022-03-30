@@ -11,6 +11,7 @@
         "ext-json": "*",
         "ext-libxml": "*",
         "ext-zip": "*",
+        "bbldn/sqrs": "^0.1.2",
         "symfony/console": "5.3.*",
         "symfony/css-selector": "5.3.*",
         "symfony/dom-crawler": "5.3.*",

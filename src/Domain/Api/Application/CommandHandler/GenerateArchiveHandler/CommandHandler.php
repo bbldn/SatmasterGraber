@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Api\Application\CommandHandler;
+namespace App\Domain\Api\Application\CommandHandler\GenerateArchiveHandler;
 
 use Throwable;
 use ZipArchive;
@@ -12,12 +12,10 @@ use Symfony\Component\Filesystem\Filesystem;
 use App\Domain\Parser\Domain\ValueObject\URL;
 use App\Domain\Api\Domain\State\Initialization;
 use App\Domain\Api\Application\Command\GenerateArchive;
-use App\Domain\Common\Application\Helper\ExceptionFormatter;
 use App\Domain\Api\Application\Common\State\File as StateFile;
 use Symfony\Contracts\HttpClient\HttpClientInterface as HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use App\Domain\Api\Application\Command\GenerateArchiveHandler as Base;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\ArgumentList;
@@ -25,7 +23,7 @@ use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Domain\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Generator as ProductToSQLGenerator;
 
-class GenerateArchiveHandler implements Base
+class CommandHandler
 {
     private Logger $logger;
 
@@ -189,7 +187,8 @@ class GenerateArchiveHandler implements Base
         try {
             $this->invoke($command, $file);
         }  catch (Throwable $e) {
-            $this->logger->error(ExceptionFormatter::e($e));
+            /** @var string $e */
+            $this->logger->error($e);
             $file->whiteState(new Error('Ошибка сервера. Обратитесь к администратору.'));
         }
     }

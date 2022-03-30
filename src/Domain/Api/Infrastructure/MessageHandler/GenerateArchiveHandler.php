@@ -2,8 +2,8 @@
 
 namespace App\Domain\Api\Infrastructure\MessageHandler;
 
+use BBLDN\CQRS\CommandBus\CommandBus;
 use App\Domain\Api\Domain\Message\GenerateArchive;
-use App\Domain\Common\Application\CommandBus\CommandBus;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use App\Domain\Api\Application\Command\GenerateArchive as GenerateArchiveCommand;
 

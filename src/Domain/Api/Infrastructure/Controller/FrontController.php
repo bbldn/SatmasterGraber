@@ -3,15 +3,15 @@
 namespace App\Domain\Api\Infrastructure\Controller;
 
 use Throwable;
+use BBLDN\CQRS\QueryBus\QueryBus;
+use BBLDN\CQRS\CommandBus\CommandBus;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Domain\Api\Application\Command\StartProcess;
-use App\Domain\Common\Application\QueryBus\QueryBus;
 use App\Domain\Api\Application\Command\ResetProcess;
 use App\Domain\Api\Application\Query\GetProcessState;
 use App\Domain\Common\Domain\Response\JSONRPCResponse;
 use App\Domain\Common\Domain\ArgumentList\ArgumentList;
-use App\Domain\Common\Application\CommandBus\CommandBus;
 use App\Domain\Common\Infrastructure\Controller\JSONRPCController;
 
 class FrontController extends JSONRPCController

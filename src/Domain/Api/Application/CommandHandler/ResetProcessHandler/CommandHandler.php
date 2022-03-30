@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Domain\Api\Application\CommandHandler;
+namespace App\Domain\Api\Application\CommandHandler\ResetProcessHandler;
 
 use App\Domain\Api\Domain\State\State;
 use App\Domain\Api\Application\Command\ResetProcess;
 use App\Domain\Api\Application\Common\State\File as StateFile;
-use App\Domain\Api\Application\Command\ResetProcessHandler as Base;
 
-class ResetProcessHandler implements Base
+class CommandHandler
 {
     /**
      * @param ResetProcess $command
