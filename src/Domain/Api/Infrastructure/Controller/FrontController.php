@@ -74,7 +74,7 @@ class FrontController extends JSONRPCController
         $params = $arguments->getParamList();
         $command = new StartProcess(
             $userId,
-            $params[0],
+            $params[0] ?? '',
             $params[1] ?? null,
             $params[2] ?? null
         );

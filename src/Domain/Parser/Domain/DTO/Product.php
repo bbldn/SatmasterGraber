@@ -22,7 +22,7 @@ class Product
     /**
      * @var Attribute[]|null
      *
-     * @psalm-var Attribute|null
+     * @psalm-var list<Attribute>|null
      */
     private ?array $attributes = null;
 
@@ -128,7 +128,7 @@ class Product
     /**
      * @return Attribute[]|null
      *
-     * @psalm-return Attribute|null
+     * @psalm-return list<Attribute>|null
      */
     public function getAttributes(): ?array
     {
@@ -139,7 +139,7 @@ class Product
      * @param Attribute[]|null $attributes
      * @return Product
      *
-     * @psalm-param Attribute|null $attributes
+     * @psalm-param list<Attribute>|null $attributes
      */
     public function setAttributes(?array $attributes): Product
     {

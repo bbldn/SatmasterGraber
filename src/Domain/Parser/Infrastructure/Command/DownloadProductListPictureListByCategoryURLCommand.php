@@ -12,7 +12,7 @@ use App\Domain\Parser\Application\Command\DownloadProductListPictureListByCatego
 
 class DownloadProductListPictureListByCategoryURLCommand extends Command
 {
-    /** @var string */
+    /** @var string|null */
     protected static $defaultName = 'project:download:products:pictures:by:category:url';
 
     private CommandBus $commandBus;

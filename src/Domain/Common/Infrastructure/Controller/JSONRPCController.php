@@ -2,6 +2,7 @@
 
 namespace App\Domain\Common\Infrastructure\Controller;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Common\Domain\Response\JSONRPCResponse;
 use App\Domain\Common\Domain\ArgumentList\ArgumentList;
@@ -9,6 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 abstract class JSONRPCController extends AbstractController
 {
+    /**
+     * @var ContainerInterface
+     *
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
+    protected $container;
+
     protected abstract function getAliases(): array;
 
     /**
@@ -19,7 +27,7 @@ abstract class JSONRPCController extends AbstractController
      */
     public function entryPoint(Request $request): JSONRPCResponse
     {
-        $content = json_decode($request->getContent(), true);
+        $content = json_decode((string)$request->getContent(), true);
 
         $aliases = $this->getAliases();
         $method = $content['method'] ?? '';

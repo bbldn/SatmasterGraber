@@ -73,7 +73,7 @@ class ParseCategoryProductListByCategoryURL implements Command
      * @param Closure|null $onStep
      * @return ParseCategoryProductListByCategoryURL
      *
-     * @psalm-param null|Closure():void $onInit
+     * @psalm-param null|Closure():void $onStep
      */
     public function setOnStep(?Closure $onStep): self
     {

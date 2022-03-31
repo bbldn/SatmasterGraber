@@ -39,11 +39,13 @@ class Generator
      */
     private function sqlId(Product $product): string
     {
+        $name = (string)$product->getName();
+
         /**
          * @noinspection SqlDialectInspection
          * @noinspection SqlNoDataSourceInspection
          */
-        $expression = sprintf('SELECT `product_id` FROM `oc_product_description` WHERE `name` = "%s" LIMIT 1', $product->getName());
+        $expression = sprintf('SELECT `product_id` FROM `oc_product_description` WHERE `name` = "%s" LIMIT 1', $name);
 
         /**
          * @noinspection SqlDialectInspection

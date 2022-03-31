@@ -85,7 +85,7 @@ class ParserImpl implements Parser
      */
     private function parseImageList(Crawler $crawler): array
     {
-        $closure = static fn(Crawler $c): string => $c->attr('href');
+        $closure = static fn(Crawler $c): string => (string)$c->attr('href');
 
         return $crawler->filter('article.product-box div.items div.item a')->each($closure);
     }

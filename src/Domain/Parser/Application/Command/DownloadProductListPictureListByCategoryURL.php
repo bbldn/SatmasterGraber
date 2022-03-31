@@ -73,7 +73,7 @@ class DownloadProductListPictureListByCategoryURL implements Command
      * @param Closure|null $onStep
      * @return DownloadProductListPictureListByCategoryURL
      *
-     * @psalm-param null|Closure():void $onInit
+     * @psalm-param null|Closure():void $onStep
      */
     public function setOnStep(?Closure $onStep): self
     {

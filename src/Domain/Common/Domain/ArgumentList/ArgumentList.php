@@ -10,17 +10,18 @@ class ArgumentList
 
     private Request $request;
 
+    /** @var mixed */
     private $id;
 
     /**
      * @param array|null $paramList
      * @param Request $request
-     * @param null $id
+     * @param mixed $id
      */
     public function __construct(
         ?array $paramList,
         Request $request,
-        $id = null
+        $id
     )
     {
         $this->paramList = $paramList;
@@ -45,7 +46,7 @@ class ArgumentList
     }
 
     /**
-     * @return null
+     * @return mixed
      */
     public function getId()
     {

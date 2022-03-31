@@ -11,7 +11,7 @@ use App\Domain\Parser\Application\Command\ParseProductByURL;
 
 class ParseProductByURLCommand extends Command
 {
-    /** @var string */
+    /** @var string|null */
     protected static $defaultName = 'project:parse:product:by:url';
 
     private CommandBus $commandBus;

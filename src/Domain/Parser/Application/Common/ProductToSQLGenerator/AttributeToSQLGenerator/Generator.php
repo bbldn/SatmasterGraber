@@ -12,11 +12,13 @@ class Generator
      */
     private function sqlId(Attribute $attribute): string
     {
+        $name = (string)$attribute->getName();
+
         /**
          * @noinspection SqlDialectInspection
          * @noinspection SqlNoDataSourceInspection
          */
-        $expression = sprintf('SELECT `attribute_id` FROM `oc_attribute_description` WHERE `name` = "%s" LIMIT 1', $attribute->getName());
+        $expression = sprintf('SELECT `attribute_id` FROM `oc_attribute_description` WHERE `name` = "%s" LIMIT 1', $name);
 
         /**
          * @noinspection SqlDialectInspection
@@ -46,7 +48,7 @@ class Generator
     private function sqlAttributeDescription(Attribute $attribute): string
     {
         $fields = ['`attribute_id`', '`language_id`', '`name`'];
-        $values = ['@attributeId', '1', sprintf('"%s"', $attribute->getName())];
+        $values = ['@attributeId', '1', "{$attribute->getName()}"];
 
         /** @noinspection SqlNoDataSourceInspection */
         return sprintf('REPLACE INTO `oc_attribute_description` (%s) VALUES (%s);', implode(', ', $fields), implode(', ', $values));

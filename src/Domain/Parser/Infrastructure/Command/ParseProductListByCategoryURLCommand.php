@@ -12,7 +12,7 @@ use App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURL;
 
 class ParseProductListByCategoryURLCommand extends Command
 {
-    /** @var string */
+    /** @var string|null */
     protected static $defaultName = 'project:parse:products:by:category:url';
 
     private CommandBus $commandBus;

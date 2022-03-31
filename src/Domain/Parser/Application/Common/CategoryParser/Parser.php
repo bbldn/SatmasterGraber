@@ -33,7 +33,7 @@ class Parser
     {
         $html = $this->getContent($url);
 
-        $closure = static fn(Crawler $c) => $c->attr('href');
+        $closure = static fn(Crawler $c): ?string => $c->attr('href');
         $data = (new Crawler($html))->filter('nav.page_nav a.addable')->each($closure);
 
         $result = [];
