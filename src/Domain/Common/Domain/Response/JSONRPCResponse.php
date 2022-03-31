@@ -87,8 +87,9 @@ class JSONRPCResponse extends Response
      */
     private function setJson(string $json): self
     {
-        if (false === $this->headers->has('Content-Type')) {
-            $this->headers->set('Content-Type', 'application/json');
+        $key = 'Content-Type';
+        if (false === $this->headers->has($key)) {
+            $this->headers->set($key, 'application/json');
         }
 
         return $this->setContent($json);
