@@ -19,10 +19,7 @@ class JSONRPCController extends AbstractController
      * @param Hydrator $hydrator
      * @param JSONRPCKernel $kernel
      */
-    public function __construct(
-        Hydrator $hydrator,
-        JSONRPCKernel $kernel
-    )
+    public function __construct(Hydrator $hydrator, JSONRPCKernel $kernel)
     {
         $this->kernel = $kernel;
         $this->hydrator = $hydrator;
