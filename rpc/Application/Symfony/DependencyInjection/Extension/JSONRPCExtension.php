@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use BBLDN\JSONRPC\Application\ResolverRegistry\ResolverRegistry;
+use BBLDN\JSONRPC\Infrastructure\Symfony\Controller\JSONRPCController;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use BBLDN\JSONRPC\Application\Symfony\DependencyInjection\Helper\Context;
 
@@ -96,6 +97,23 @@ class JSONRPCExtension implements ExtensionInterface
      * @param ContainerBuilder $container
      * @return void
      */
+    private function definitionController(ContainerBuilder $container): void
+    {
+        $definition = new Definition();
+        $definition->setPublic(true);
+        $definition->setAutowired(true);
+        $definition->setAutoconfigured(true);
+        $definition->setClass(JSONRPCController::class);
+        $definition->setTags(['container.service_subscriber' => []]);
+        $definition->addMethodCall('setContainer', [new Reference('service_container')]);
+
+        $container->setDefinition(JSONRPCController::class, $definition);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @return void
+     */
     private function registerAutoconfiguration(ContainerBuilder $container): void
     {
         $container->registerForAutoconfiguration(Resolver::class)->addTag($this->context->getResolverTag());
@@ -110,8 +128,9 @@ class JSONRPCExtension implements ExtensionInterface
     {
         $this->registerAutoconfiguration($container);
 
-        $this->definitionHydrator($container);
-        $this->definitionResolverRegistry($container);
         $this->definitionKernel($container);
+        $this->definitionHydrator($container);
+        $this->definitionController($container);
+        $this->definitionResolverRegistry($container);
     }
 }
