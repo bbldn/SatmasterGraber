@@ -1,6 +1,6 @@
 <?php
 
-namespace BBLDN\JSONRPC\Resolver;
+namespace BBLDN\JSONRPC\Infrastructure\Resolver;
 
 interface Resolver
 {

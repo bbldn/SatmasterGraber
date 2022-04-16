@@ -2,10 +2,10 @@
 
 namespace BBLDN\JSONRPC;
 
-use BBLDN\JSONRPC\Helper\Context;
-use BBLDN\JSONRPC\Resolver\Resolver;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use BBLDN\JSONRPC\Application\Symfony\DependencyInjection\Helper\Context;
+use BBLDN\JSONRPC\Application\Symfony\DependencyInjection\Extension\JSONRPCExtension;
 
 class JSONRPCBundle extends Bundle
 {
@@ -17,6 +17,6 @@ class JSONRPCBundle extends Bundle
     {
         $context = new Context();
 
-        $container->registerForAutoconfiguration(Resolver::class)->addTag($context->getResolverTag());
+        $container->registerExtension(new JSONRPCExtension($context));
     }
 }
