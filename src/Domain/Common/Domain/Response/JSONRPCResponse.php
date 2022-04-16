@@ -9,13 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class JSONRPCResponse extends Response
 {
-    /**
-     * @var string
-     *
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    protected $charset;
-
     /** @var int */
     public const DEFAULT_ENCODING_OPTIONS = 15;
 
