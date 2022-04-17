@@ -2,6 +2,7 @@
 
 namespace BBLDN\JSONRPCBundle\Bundle\Application\Symfony\DependencyInjection\Compiler;
 
+use LogicException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use BBLDN\JSONRPCBundle\Bundle\Application\ResolverRegistry\ResolverRegistry;
 use BBLDN\JSONRPCBundle\Bundle\Application\Symfony\DependencyInjection\Helper\Context;
@@ -28,16 +29,19 @@ class JSONRPCRegistryPass implements CompilerPass
         $resolverMap = [];
         $serviceMap = $container->findTaggedServiceIds($this->context->getResolverTag());
         foreach ($serviceMap as $serviceId => $_) {
-            $commandClassName = (string)$container->getDefinition($serviceId)->getClass();
+            $serviceDefinition = $container->getDefinition($serviceId);
+            $commandClassName = (string)$serviceDefinition->getClass();
 
             /** @psalm-var array<string, string> */
             $aliasMap = call_user_func("$commandClassName::getAliases");
             foreach ($aliasMap as $alias => $method) {
                 if (true === key_exists($alias, $resolverMap)) {
-                    throw new \LogicException("Alias: \"$alias\" already define");
+                    throw new LogicException("Alias: \"$alias\" already define");
                 }
 
                 $resolverMap[$alias] = [$commandClassName, $method];
+
+                $serviceDefinition->setPublic(true);
             }
         }
 

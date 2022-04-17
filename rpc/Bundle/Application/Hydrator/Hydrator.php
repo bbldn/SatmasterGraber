@@ -42,11 +42,11 @@ class Hydrator
     public function hydrate(string $data)
     {
         $array = json_decode($data, true);
-        if (false === $array) {
+        if (false === $array || null === $array) {
             throw new ParseJSONException('Parsing error');
         }
 
-        if (true === array_is_list($array)) {
+        if (false === array_is_list($array)) {
             return $this->hydrateItem($array);
         }
 

@@ -26,7 +26,7 @@ class ResolverRegistry
      *
      * @psalm-return array<string, array{0: class-string, 1: string}>
      */
-    public function getRegistry(): array
+    public function getAll(): array
     {
         return $this->registry;
     }

@@ -86,7 +86,7 @@ class JSONRPCExtension implements ExtensionInterface
         $definition = new Definition();
         $definition->setLazy(true);
         $definition->setArgument(0, new Reference('service_container'));
-        $definition->setArgument(1, $this->context->getResolverRegistryAlias());
+        $definition->setArgument(1, new Reference($this->context->getResolverRegistryAlias()));
         $definition->setClass(Kernel::class);
 
         $container->setDefinition(Kernel::class, $definition);

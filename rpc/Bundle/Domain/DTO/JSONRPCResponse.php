@@ -9,14 +9,14 @@ class JSONRPCResponse
     private $error;
 
     /**
-     * @var string|int
+     * @var string|int|null
      */
     private $id;
 
     /**
      * @param mixed $result
      * @param mixed $error
-     * @param int|string $id
+     * @param string|int|null $id
      */
     private function __construct($id, $result = null, $error = null)
     {
@@ -27,7 +27,7 @@ class JSONRPCResponse
 
     /**
      * @param mixed $result
-     * @param int|string $id
+     * @param string|int|null $id
      * @return JSONRPCResponse
      */
     public static function createSuccess($result, $id): JSONRPCResponse
@@ -37,7 +37,7 @@ class JSONRPCResponse
 
     /**
      * @param mixed $error
-     * @param int|string $id
+     * @param string|int|null $id
      * @return JSONRPCResponse
      */
     public static function createError($error, $id): JSONRPCResponse
@@ -72,7 +72,7 @@ class JSONRPCResponse
     /**
      * @return array
      *
-     * @psalm-return array{jsonrpc: string, result: mixed, id: int|string}|array{jsonrpc: string, error: mixed, id: int|string}
+     * @psalm-return array{jsonrpc: string, result: mixed, id: string|int|null}|array{jsonrpc: string, error: mixed, id: string|int|null}
      */
     public function toArray(): array
     {

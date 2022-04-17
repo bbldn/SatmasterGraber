@@ -32,13 +32,13 @@ class Kernel
     /**
      * @param JSONRPCRequest $request
      * @return JSONRPCResponse|null
-     * @throws MethodNotFoundException
+     * @throws JSONRPCException
      *
      * @noinspection PhpDocMissingThrowsInspection
      */
     private function handleRequest(JSONRPCRequest $request): ?JSONRPCResponse
     {
-        $aliasMap = $this->resolverRegistry->getRegistry();
+        $aliasMap = $this->resolverRegistry->getAll();
         $method = $request->getMethod();
         if (false === key_exists($method, $aliasMap)) {
             throw new MethodNotFoundException("Resolver for method: \"$method\" not found");
@@ -71,7 +71,7 @@ class Kernel
     /**
      * @param JSONRPCRequest $request
      * @return JSONRPCResponse|null
-     * @throws MethodNotFoundException
+     * @throws JSONRPCException
      */
     public function handle(JSONRPCRequest $request): ?JSONRPCResponse
     {

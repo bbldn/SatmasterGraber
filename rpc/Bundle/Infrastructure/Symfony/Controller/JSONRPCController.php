@@ -3,11 +3,12 @@
 namespace BBLDN\JSONRPCBundle\Bundle\Infrastructure\Symfony\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use BBLDN\JSONRPCBundle\Bundle\Domain\DTO\JSONRPCResponse;
 use BBLDN\JSONRPCBundle\Bundle\Application\Hydrator\Hydrator;
-use BBLDN\JSONRPCBundle\Bundle\Domain\Symfony\JSONRPCResponse;
 use BBLDN\JSONRPCBundle\Bundle\Domain\Exception\JSONRPCException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use BBLDN\JSONRPCBundle\Bundle\Application\Kernel as JSONRPCKernel;
+use BBLDN\JSONRPCBundle\Bundle\Domain\Symfony\JSONRPCResponse as JSONRPCResponseSymfony;
 
 class JSONRPCController extends AbstractController
 {
@@ -27,12 +28,18 @@ class JSONRPCController extends AbstractController
 
     /**
      * @param Request $request
-     * @return JSONRPCResponse
+     * @return JSONRPCResponseSymfony
      * @throws JSONRPCException
      */
-    public function entryPoint(Request $request): JSONRPCResponse
+    public function entryPoint(Request $request): JSONRPCResponseSymfony
     {
-        $requestList = $this->hydrator->hydrate((string)$request->getContent());
+        try {
+            $requestList = $this->hydrator->hydrate((string)$request->getContent());
+        } catch (JSONRPCException $e) {
+            $response = JSONRPCResponse::createError($e->toArray(), null);
+
+            return new JSONRPCResponseSymfony($response);
+        }
 
         if (true === is_array($requestList)) {
             $response = $this->kernel->handleList($requestList);
@@ -40,6 +47,6 @@ class JSONRPCController extends AbstractController
             $response = $this->kernel->handle($requestList);
         }
 
-        return new JSONRPCResponse($response);
+        return new JSONRPCResponseSymfony($response);
     }
 }
