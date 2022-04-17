@@ -6,11 +6,10 @@ use Symfony\Component\HttpFoundation\Request;
 use BBLDN\JSONRPCBundle\Bundle\Domain\DTO\JSONRPCResponse;
 use BBLDN\JSONRPCBundle\Bundle\Application\Hydrator\Hydrator;
 use BBLDN\JSONRPCBundle\Bundle\Domain\Exception\JSONRPCException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use BBLDN\JSONRPCBundle\Bundle\Application\Kernel as JSONRPCKernel;
 use BBLDN\JSONRPCBundle\Bundle\Domain\Symfony\JSONRPCResponse as JSONRPCResponseSymfony;
 
-class JSONRPCController extends AbstractController
+class JSONRPCController
 {
     private Hydrator $hydrator;
 

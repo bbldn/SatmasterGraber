@@ -104,8 +104,6 @@ class JSONRPCExtension implements ExtensionInterface
         $definition->setAutowired(true);
         $definition->setAutoconfigured(true);
         $definition->setClass(JSONRPCController::class);
-        $definition->setTags(['container.service_subscriber' => []]);
-        $definition->addMethodCall('setContainer', [new Reference('service_container')]);
 
         $container->setDefinition(JSONRPCController::class, $definition);
     }
