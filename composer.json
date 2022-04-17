@@ -43,7 +43,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/",
-            "BBLDN\\JSONRPC\\": "rpc/"
+            "BBLDN\\JSONRPCBundle\\": "rpc/"
         }
     },
     "replace": {

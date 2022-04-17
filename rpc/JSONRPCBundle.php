@@ -1,12 +1,12 @@
 <?php
 
-namespace BBLDN\JSONRPC;
+namespace BBLDN\JSONRPCBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use BBLDN\JSONRPC\Application\Symfony\DependencyInjection\Helper\Context;
-use BBLDN\JSONRPC\Application\Symfony\DependencyInjection\Extension\JSONRPCExtension;
-use BBLDN\JSONRPC\Application\Symfony\DependencyInjection\Compiler\JSONRPCRegistryPass;
+use BBLDN\JSONRPCBundle\Bundle\Application\Symfony\DependencyInjection\Helper\Context;
+use BBLDN\JSONRPCBundle\Bundle\Application\Symfony\DependencyInjection\Extension\JSONRPCExtension;
+use BBLDN\JSONRPCBundle\Bundle\Application\Symfony\DependencyInjection\Compiler\JSONRPCRegistryPass;
 
 class JSONRPCBundle extends Bundle
 {
