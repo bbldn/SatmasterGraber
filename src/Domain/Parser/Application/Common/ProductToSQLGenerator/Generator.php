@@ -98,7 +98,7 @@ class Generator
             '`external_id`',
         ];
 
-        $images = $product->getImages();
+        $images = $product->getImageList();
         if (null !== $path && null !== $images && count($images) > 0) {
             $pathParts = pathinfo($images[0]);
             $path = "$path{$pathParts['basename']}";
@@ -212,7 +212,7 @@ class Generator
      */
     private function sqlProductImage(Product $product, string $path): array
     {
-        $images = $product->getImages() ?? [];
+        $images = $product->getImageList() ?? [];
 
         /**
          * @noinspection SqlDialectInspection
@@ -241,7 +241,7 @@ class Generator
      */
     private function sqlAttributeList(Product $product): array
     {
-        $attributes = $product->getAttributes() ?? [];
+        $attributes = $product->getAttributeList() ?? [];
 
         $result = [];
         foreach ($attributes as $attribute) {
@@ -255,10 +255,10 @@ class Generator
     }
 
     /**
-     * @param ArgumentList $arguments
+     * @param Arguments $arguments
      * @return string
      */
-    public function generate(ArgumentList $arguments): string
+    public function generate(Arguments $arguments): string
     {
         $path = $arguments->getImagePath();
         $product = $arguments->getProduct();

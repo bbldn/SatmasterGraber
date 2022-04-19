@@ -55,7 +55,7 @@ class Synchronizer
             $productAttributeFrontMapByAttributeFrontId[$attributeFrontId] = $productAttributeFront;
         }
 
-        foreach ($productParser->getAttributes() ?? [] as $attributeParser) {
+        foreach ($productParser->getAttributeList() ?? [] as $attributeParser) {
             $attributeFront = $this->attributeParserToFrontSynchronizer->synchronize($attributeParser);
 
             /** @var int $attributeFrontId */

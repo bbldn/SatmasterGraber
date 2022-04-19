@@ -5,7 +5,6 @@ services:
         autowire: true
         autoconfigure: true
         bind:
-            $entityManagerBack: '@doctrine.orm.default_entity_manager'
             $entityManagerFront: '@doctrine.orm.front_entity_manager'
 
     App\:

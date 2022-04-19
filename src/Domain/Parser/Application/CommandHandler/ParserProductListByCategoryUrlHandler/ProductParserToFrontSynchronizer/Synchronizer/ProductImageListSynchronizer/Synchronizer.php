@@ -46,7 +46,7 @@ class Synchronizer
      */
     public function synchronize(ProductFront $productFront, ProductParser $productParser): void
     {
-        $productParserImageList = $productParser->getImages() ?? [];
+        $productParserImageList = $productParser->getImageList() ?? [];
         $productParserImageMapByFilename = CollectionRebuilder::rebuild('basename', $productParserImageList);
         foreach ($productFront->getProductImages() as $index => $productImageFront) {
             $key = basename((string)$productImageFront->getImage());

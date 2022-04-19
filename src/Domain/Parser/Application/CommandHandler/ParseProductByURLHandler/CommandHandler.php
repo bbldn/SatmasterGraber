@@ -4,7 +4,7 @@ namespace App\Domain\Parser\Application\CommandHandler\ParseProductByURLHandler;
 
 use Symfony\Component\HttpKernel\KernelInterface as Kernel;
 use App\Domain\Parser\Application\Command\ParseProductByURL;
-use App\Domain\Parser\Application\Common\ProductToSQLGenerator\ArgumentList;
+use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Arguments;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Generator as ProductToSQLGenerator;
 
@@ -41,7 +41,7 @@ class CommandHandler
         $fileName = "{$this->kernel->getProjectDir()}/var/dumps/dump.sql";
 
         $product = $this->productParser->parse($command->getUrl());
-        $arguments = new ArgumentList($product);
+        $arguments = new Arguments($product);
         $arguments->setCategoryId(62);
         $arguments->setImagePath('catalog/prod/graber/');
         $row = $this->productToSQLGenerator->generate($arguments);

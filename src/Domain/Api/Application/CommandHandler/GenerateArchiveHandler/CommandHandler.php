@@ -17,7 +17,7 @@ use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use App\Domain\Parser\Application\Common\ProductToSQLGenerator\ArgumentList;
+use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Arguments;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Domain\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
 use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Generator as ProductToSQLGenerator;
@@ -159,15 +159,15 @@ class CommandHandler
         foreach ($productsUrls as $index => $productUrl) {
             $product = $this->productParser->parse($productUrl);
 
-            $arguments = new ArgumentList($product);
+            $arguments = new Arguments($product);
             $arguments->setImagePath($command->getDestinationImagesPath());
             $arguments->setCategoryId($command->getDestinationCategoryId());
 
             $row = $this->productToSQLGenerator->generate($arguments);
             file_put_contents($dumpsFileName, $row, FILE_APPEND);
 
-            $images = $product->getImages() ?? [];
-            foreach ($images as $image) {
+            $imageList = $product->getImageList() ?? [];
+            foreach ($imageList as $image) {
                 $array = pathinfo($image);
                 $content = $this->getContent("https://satmaster.kiev.ua$image");
                 $fileName = "/tmp/graber/{$command->getUserId()}/images/{$array['basename']}";

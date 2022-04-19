@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Parser\Application\Common\ProductParser\AttributesParser;
+namespace App\Domain\Parser\Application\Common\ProductParser\AttributeListParser;
 
 use Symfony\Component\DomCrawler\Crawler;
 use App\Domain\Parser\Domain\DTO\Attribute;

@@ -6,28 +6,28 @@ use Symfony\Component\DomCrawler\Crawler;
 use App\Domain\Parser\Domain\DTO\Product;
 use App\Domain\Parser\Domain\DTO\Attribute;
 use App\Domain\Parser\Domain\Exception\ParseException;
-use App\Domain\Parser\Application\Common\ProductParser\AttributesParser\Parser as AttributesParser;
+use App\Domain\Parser\Application\Common\ProductParser\AttributeListParser\Parser as AttributeListParser;
 
 class ParserImpl implements Parser
 {
-    private AttributesParser $attributesParser;
+    private AttributeListParser $attributeListParser;
 
     /**
-     * @param AttributesParser $attributesParser
+     * @param AttributeListParser $attributeListParser
      */
-    public function __construct(AttributesParser $attributesParser)
+    public function __construct(AttributeListParser $attributeListParser)
     {
-        $this->attributesParser = $attributesParser;
+        $this->attributeListParser = $attributeListParser;
     }
 
     /**
      * @param string $url
-     * @return string
+     * @return string|null
      * @throws ParseException
      */
-    private function getContent(string $url): string
+    private function getContent(string $url): ?string
     {
-        $html = @file_get_contents("https://am-parts.ru$url");
+        $html = @file_get_contents($url);
         if (false === $html) {
             throw new ParseException('Error');
         }
@@ -113,7 +113,7 @@ class ParserImpl implements Parser
      */
     private function parseAttributeList(Crawler $crawler, Product $product): array
     {
-        $attributeList = $this->attributesParser->parse($crawler);
+        $attributeList = $this->attributeListParser->parse($crawler);
         foreach ($attributeList as $attribute) {
             $attribute->setProduct($product);
         }
@@ -132,15 +132,17 @@ class ParserImpl implements Parser
 
         $crawler = new Crawler($html);
 
-        $description = $this->parseDescription($crawler);
+        $imageList = $this->parseImageList($crawler);
+        $image = count($imageList) > 0 ? array_shift($imageList): null;
 
         $result = new Product();
-        $result->setDescription($description);
+        $result->setImage($image);
+        $result->setImageList($imageList);
         $result->setId($this->parseId($crawler));
         $result->setName($this->parseName($crawler));
         $result->setPrice($this->parsePrice($crawler));
-        $result->setImages($this->parseImageList($crawler));
-        $result->setAttributes($this->parseAttributeList($crawler, $result));
+        $result->setDescription($this->parseDescription($crawler));
+        $result->setAttributeList($this->parseAttributeList($crawler, $result));
 
         return $result;
     }

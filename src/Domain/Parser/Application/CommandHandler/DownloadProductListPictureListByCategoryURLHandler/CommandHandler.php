@@ -64,7 +64,7 @@ class CommandHandler
         foreach ($urlList as $url) {
             $product = $this->productParser->parse($url);
 
-            $imageList = $product->getImages() ?? [];
+            $imageList = $product->getImageList() ?? [];
             foreach ($imageList as $image) {
                 $array = pathinfo($image);
                 $content = $this->getContent("https://satmaster.kiev.ua$image");

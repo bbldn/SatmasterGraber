@@ -7,7 +7,7 @@ use DOMException;
 use Symfony\Component\DomCrawler\Crawler;
 use App\Domain\Parser\Domain\DTO\Product;
 use App\Domain\Parser\Domain\Exception\ParseException;
-use App\Domain\Parser\Application\Common\ProductParser\AttributesParser\Parser as AttributesParser;
+use App\Domain\Parser\Application\Common\ProductParser\AttributeListParser\Parser as AttributesParser;
 
 class ParserImplDecorated implements Parser
 {

@@ -4,7 +4,7 @@ namespace App\Domain\Parser\Application\CommandHandler\ParseCategoryProductListB
 
 use App\Domain\Parser\Domain\Exception\ParseException;
 use Symfony\Component\HttpKernel\KernelInterface as Kernel;
-use App\Domain\Parser\Application\Common\ProductToSQLGenerator\ArgumentList;
+use App\Domain\Parser\Application\Common\ProductToSQLGenerator\Arguments;
 use App\Domain\Parser\Application\Common\ProductParser\Parser as ProductParser;
 use App\Domain\Parser\Application\Command\ParseCategoryProductListByCategoryURL;
 use App\Domain\Parser\Application\Common\CategoryParser\Parser as CategoryParser;
@@ -63,7 +63,7 @@ class CommandHandler
 
         foreach ($urlList as $url) {
             $product = $this->productParser->parse($url);
-            $arguments = new ArgumentList($product);
+            $arguments = new Arguments($product);
             $arguments->setCategoryId(62);
             $arguments->setImagePath('catalog/prod/graber/');
             $row = $this->productToSQLGenerator->generate($arguments);

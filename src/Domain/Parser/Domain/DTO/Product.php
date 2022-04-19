@@ -10,6 +10,8 @@ class Product
 
     private ?string $name = null;
 
+    private ?string $image = null;
+
     private ?string $description = null;
 
     /**
@@ -17,14 +19,14 @@ class Product
      *
      * @psalm-param list<string>|null
      */
-    private ?array $images = null;
+    private ?array $imageList = null;
 
     /**
      * @var Attribute[]|null
      *
      * @psalm-var list<Attribute>|null
      */
-    private ?array $attributes = null;
+    private ?array $attributeList = null;
 
     /**
      * @return int|null
@@ -86,6 +88,25 @@ class Product
     /**
      * @return string|null
      */
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string|null $image
+     * @return Product
+     */
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getDescription(): ?string
     {
         return $this->description;
@@ -107,20 +128,20 @@ class Product
      *
      * @psalm-return list<string>|null
      */
-    public function getImages(): ?array
+    public function getImageList(): ?array
     {
-        return $this->images;
+        return $this->imageList;
     }
 
     /**
-     * @param string[]|null $images
+     * @param string[]|null $imageList
      * @return Product
      *
-     * @psalm-param list<string>|null $images
+     * @psalm-param list<string>|null $imageList
      */
-    public function setImages(?array $images): self
+    public function setImageList(?array $imageList): self
     {
-        $this->images = $images;
+        $this->imageList = $imageList;
 
         return $this;
     }
@@ -130,20 +151,20 @@ class Product
      *
      * @psalm-return list<Attribute>|null
      */
-    public function getAttributes(): ?array
+    public function getAttributeList(): ?array
     {
-        return $this->attributes;
+        return $this->attributeList;
     }
 
     /**
-     * @param Attribute[]|null $attributes
+     * @param Attribute[]|null $attributeList
      * @return Product
      *
-     * @psalm-param list<Attribute>|null $attributes
+     * @psalm-param list<Attribute>|null $attributeList
      */
-    public function setAttributes(?array $attributes): Product
+    public function setAttributeList(?array $attributeList): Product
     {
-        $this->attributes = $attributes;
+        $this->attributeList = $attributeList;
 
         return $this;
     }
