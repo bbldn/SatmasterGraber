@@ -2,8 +2,8 @@
 
 namespace App\Domain\Api\Application\Command;
 
-use BBLDN\CQRS\CommandBus\Command;
-use BBLDN\CQRS\CommandBus\Annotation as CQRS;
+use BBLDN\CQRSBundle\CommandBus\Command;
+use BBLDN\CQRSBundle\CommandBus\Annotation as CQRS;
 use App\Domain\Api\Application\CommandHandler\StartProcessHandler\CommandHandler;
 
 /**

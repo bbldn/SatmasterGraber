@@ -2,7 +2,7 @@
 
 namespace App\Domain\Parser\Infrastructure\Command;
 
-use BBLDN\CQRS\CommandBus\CommandBus;
+use BBLDN\CQRSBundle\CommandBus\CommandBus;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

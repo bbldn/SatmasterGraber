@@ -2,9 +2,9 @@
 
 namespace App\Domain\Api\Infrastructure\Resolver;
 
-use BBLDN\CQRS\QueryBus\QueryBus;
-use BBLDN\CQRS\CommandBus\CommandBus;
 use App\Domain\Api\Domain\State\State;
+use BBLDN\CQRSBundle\QueryBus\QueryBus;
+use BBLDN\CQRSBundle\CommandBus\CommandBus;
 use Symfony\Component\HttpFoundation\Request;
 use BBLDN\JSONRPCBundle\Bundle\Domain\DTO\Arguments;
 use App\Domain\Api\Application\Command\StartProcess;

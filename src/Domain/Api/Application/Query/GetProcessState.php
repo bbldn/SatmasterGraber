@@ -2,8 +2,8 @@
 
 namespace App\Domain\Api\Application\Query;
 
-use BBLDN\CQRS\QueryBus\Query;
-use BBLDN\CQRS\QueryBus\Annotation as CQRS;
+use BBLDN\CQRSBundle\QueryBus\Query;
+use BBLDN\CQRSBundle\QueryBus\Annotation as CQRS;
 use App\Domain\Api\Application\QueryHandler\GetProcessStateHandler\QueryHandler;
 
 /**

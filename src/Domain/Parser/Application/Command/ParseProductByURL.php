@@ -2,8 +2,8 @@
 
 namespace App\Domain\Parser\Application\Command;
 
-use BBLDN\CQRS\CommandBus\Command;
-use BBLDN\CQRS\CommandBus\Annotation as CQRS;
+use BBLDN\CQRSBundle\CommandBus\Command;
+use BBLDN\CQRSBundle\CommandBus\Annotation as CQRS;
 use App\Domain\Parser\Application\CommandHandler\ParseProductByURLHandler\CommandHandler;
 
 /**
