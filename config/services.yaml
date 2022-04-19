@@ -4,12 +4,12 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            $entityManagerBack: '@doctrine.orm.default_entity_manager'
+            $entityManagerFront: '@doctrine.orm.front_entity_manager'
 
     App\:
         resource: '../src/'
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
             - '../src/Kernel.php'
-            - '../src/Tests/'
             - '../src/di.php'

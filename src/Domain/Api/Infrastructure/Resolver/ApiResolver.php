@@ -8,6 +8,7 @@ use App\Domain\Api\Domain\State\State;
 use Symfony\Component\HttpFoundation\Request;
 use BBLDN\JSONRPCBundle\Bundle\Domain\DTO\Arguments;
 use App\Domain\Api\Application\Command\StartProcess;
+use App\Domain\Api\Application\Command\ResetProcess;
 use App\Domain\Api\Application\Query\GetProcessState;
 use BBLDN\JSONRPCBundle\Bundle\Infrastructure\Resolver\Resolver;
 
@@ -38,6 +39,7 @@ class ApiResolver implements Resolver
     public static function getAliases(): array
     {
         return [
+            'reset' => 'reset',
             'startProcess' => 'startProcess',
             'getProcessState' => 'getProcessState',
         ];
@@ -89,5 +91,16 @@ class ApiResolver implements Resolver
         $query = new GetProcessState($userId);
 
         return $this->queryBus->execute($query);
+    }
+
+    /**
+     * @return State
+     */
+    public function resetAction(): State
+    {
+        $userId = $this->getUserId();
+        $command = new ResetProcess($userId);
+
+        return $this->commandBus->execute($command);
     }
 }

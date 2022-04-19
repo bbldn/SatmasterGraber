@@ -1,5 +1,0 @@
-bbldn_jsonrpc_entry_point:
-    path: /
-    defaults:
-        _format: "json"
-        _controller: BBLDN\JSONRPCBundle\Bundle\Infrastructure\Symfony\Controller\JSONRPCController::entryPoint

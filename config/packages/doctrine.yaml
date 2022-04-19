@@ -1,0 +1,50 @@
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                url: '%env(resolve:DATABASE_URL)%'
+            front:
+                url: '%env(resolve:FRONT_DATABASE_URL)%'
+
+    orm:
+        default_entity_manager: default
+        auto_generate_proxy_classes: true
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    Synchronizer:
+                        alias: Graber
+                        is_bundle: false
+                        type: annotation
+                        prefix: 'App\Domain\Common\Domain\Entity\Base\Graber'
+                        dir: '%kernel.project_dir%/src/Domain/Common/Domain/Entity/Base/Graber'
+            front:
+                connection: front
+                mappings:
+                    Front:
+                        alias: Front
+                        is_bundle: false
+                        type: annotation
+                        prefix: 'App\Domain\Common\Domain\Entity\Base\Front'
+                        dir: '%kernel.project_dir%/src/Domain/Common/Domain/Entity/Base/Front'
+
+when@prod:
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system
